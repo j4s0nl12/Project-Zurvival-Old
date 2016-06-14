@@ -47,6 +47,7 @@ public class MainMenuScreen implements Screen{
 	
 	//Sounds
 	Sound srsSound;//Single Rifle Shot
+    float volume = 0.02f;
 	
 	public MainMenuScreen(final Zurvival gam){
 		game = gam;
@@ -113,7 +114,7 @@ public class MainMenuScreen implements Screen{
 			Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(),0);
 			camera.unproject(touchPos);
 			pList.add(new BulletDentParticle(touchPos.x, touchPos.y));
-			srsSound.play();
+			srsSound.play(volume);
 			
 			//New Game
 			if(newgameBound.contains(touchPos.x,touchPos.y)){
