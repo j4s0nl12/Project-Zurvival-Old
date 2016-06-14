@@ -15,6 +15,16 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Game.Zurvival;
 import com.mygdx.game.Particles.BulletDentParticle;
 
+import static com.mygdx.game.Game.Zurvival.screenList;
+import static com.mygdx.game.Game.Zurvival.lastScreen;
+import static com.mygdx.game.Game.Zurvival.MAINMENUSCREEN;
+import static com.mygdx.game.Game.Zurvival.DAYGAMESCREEN;
+import static com.mygdx.game.Game.Zurvival.PREPAREGAMESCREEN;
+import static com.mygdx.game.Game.Zurvival.NIGHTGAMESCREEN;
+import static com.mygdx.game.Game.Zurvival.OPTIONSSCREEN;
+import static com.mygdx.game.Game.Zurvival.STATISTICSSCREEN;
+
+
 public class MainMenuScreen implements Screen{
 	
 	final Zurvival game;
@@ -88,10 +98,10 @@ public class MainMenuScreen implements Screen{
 		
 		game.batch.begin();
 		game.batch.draw(titleImg, Gdx.graphics.getWidth()/2 - titleImg.getWidth()/2, Gdx.graphics.getHeight() - 350);
-		game.batch.draw(newgameImg, newgameBound.getX(), 300);
+		game.batch.draw(newgameImg, newgameBound.getX(), newgameBound.getY());
 		//game.batch.draw(continueImg, continueBound.getX(), 300);
-		game.batch.draw(optionsImg, optionsBound.getX(), 200);
-		game.batch.draw(statImg, statBound.getX(), 100);
+		game.batch.draw(optionsImg, optionsBound.getX(), optionsBound.getY());
+		game.batch.draw(statImg, statBound.getX(), statBound.getY());
 		for(BulletDentParticle p : pList){
 			game.batch.draw(p.img, p.x - p.img.getWidth()/2, p.y - p.img.getHeight()/2);
 		}
@@ -106,21 +116,27 @@ public class MainMenuScreen implements Screen{
 			
 			//New Game
 			if(newgameBound.contains(touchPos.x,touchPos.y)){
-				
+				lastScreen = MAINMENUSCREEN;
+				game.setScreen(new NightGameScreen(game));
 			}
 			
 			//Continue
 			if(continueBound.contains(touchPos.x, touchPos.y)){
+				lastScreen = MAINMENUSCREEN;
 				
 			}
 			
 			//Options
 			if(optionsBound.contains(touchPos.x, touchPos.y)){
+				lastScreen = MAINMENUSCREEN;
+				game.setScreen(new OptionsScreen(game));
 				
 			}
 			
 			//Statistics
 			if(statBound.contains(touchPos.x, touchPos.y)){
+				lastScreen = MAINMENUSCREEN;
+				game.setScreen(new StatisticsScreen(game));
 				
 			}
 		}

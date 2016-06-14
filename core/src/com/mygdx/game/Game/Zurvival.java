@@ -1,16 +1,43 @@
 package com.mygdx.game.Game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.Screens.DayGameScreen;
 import com.mygdx.game.Screens.MainMenuScreen;
+import com.mygdx.game.Screens.NightGameScreen;
+import com.mygdx.game.Screens.OptionsScreen;
+import com.mygdx.game.Screens.PrepareGameScreen;
+import com.mygdx.game.Screens.StatisticsScreen;
 
 public class Zurvival extends Game {
 	public SpriteBatch batch;
+	public static int lastScreen;
+	public static Array<Screen> screenList;
+	
+	public static final int MAINMENUSCREEN = 0;
+	public static final int DAYGAMESCREEN = 1;
+	public static final int PREPAREGAMESCREEN = 2;
+	public static final int NIGHTGAMESCREEN = 3;
+	public static final int OPTIONSSCREEN = 4;
+	public static final int STATISTICSSCREEN = 5;
 	
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		this.setScreen(new MainMenuScreen(this));
+		screenList = new Array<>();
+		
+		//init screens
+		screenList.add(new MainMenuScreen(this));
+		screenList.add(new DayGameScreen(this));
+		screenList.add(new PrepareGameScreen(this));
+		screenList.add(new NightGameScreen(this));
+		screenList.add(new OptionsScreen(this));
+		screenList.add(new StatisticsScreen(this));
+		
+		lastScreen = MAINMENUSCREEN;
+		this.setScreen(screenList.get(MAINMENUSCREEN));
 	}
 
 	@Override
