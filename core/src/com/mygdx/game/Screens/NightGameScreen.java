@@ -47,8 +47,8 @@ public class NightGameScreen implements Screen{
 	
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-		
+		delay = 250L;
+		lastTouchedTime = System.currentTimeMillis();
 	}
 
 	@Override

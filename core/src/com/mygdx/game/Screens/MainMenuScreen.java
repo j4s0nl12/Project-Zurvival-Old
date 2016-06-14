@@ -73,8 +73,8 @@ public class MainMenuScreen implements Screen{
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-		
+		delay = 250L;
+		lastTouchedTime = System.currentTimeMillis();
 	}
 
 	@Override
@@ -118,9 +118,8 @@ public class MainMenuScreen implements Screen{
 			//New Game
 			if(newgameBound.contains(touchPos.x,touchPos.y)){
 				lastScreen = MAINMENUSCREEN;
-				game.setScreen(new NightGameScreen(game));
-				delay = 1000L;
-				//game.setScreen(screenList.get(NIGHTGAMESCREEN));
+				//game.setScreen(new NightGameScreen(game));
+				game.setScreen(screenList.get(NIGHTGAMESCREEN));
 			}
 			
 			//Continue
@@ -165,8 +164,7 @@ public class MainMenuScreen implements Screen{
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
+		pList.clear();
 	}
 
 	@Override
