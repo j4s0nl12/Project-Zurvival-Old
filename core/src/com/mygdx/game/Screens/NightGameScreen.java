@@ -18,6 +18,7 @@ import static com.mygdx.game.Game.Zurvival.PREPAREGAMESCREEN;
 import static com.mygdx.game.Game.Zurvival.NIGHTGAMESCREEN;
 import static com.mygdx.game.Game.Zurvival.OPTIONSSCREEN;
 import static com.mygdx.game.Game.Zurvival.STATISTICSSCREEN;
+import static com.mygdx.game.Game.Zurvival.getNewScreen;
 
 public class NightGameScreen implements Screen{
 	
@@ -26,6 +27,7 @@ public class NightGameScreen implements Screen{
 	
 	private long time;
 	private long lastTouchedTime;
+	public long delay;
 	
 	Texture backImg;
 	Rectangle backBound;
@@ -40,6 +42,7 @@ public class NightGameScreen implements Screen{
 		
 		time = System.currentTimeMillis();
 		lastTouchedTime = time;
+		delay = 250L;
 	}
 	
 	@Override
@@ -64,13 +67,15 @@ public class NightGameScreen implements Screen{
 		game.batch.draw(backImg, backBound.getX(), backBound.getY());
 		game.batch.end();
 		
-		if(Gdx.input.isTouched() && time >= lastTouchedTime + 100L){
+		if(Gdx.input.isTouched() && time >= lastTouchedTime + delay){
+			delay = 100L;
 			lastTouchedTime = System.currentTimeMillis();
 			Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(),0);
 			camera.unproject(touchPos);
 			
 			if(backBound.contains(touchPos.x,touchPos.y)){
 				game.setScreen(screenList.get(lastScreen));
+				//game.setScreen(getNewScreen(lastScreen,game));
 				lastScreen = NIGHTGAMESCREEN;
 			}
 		}
@@ -105,5 +110,4 @@ public class NightGameScreen implements Screen{
 		// TODO Auto-generated method stub
 		
 	}
-	
 }

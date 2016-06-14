@@ -48,4 +48,29 @@ public class Zurvival extends Game {
 	public void dispose(){
 		batch.dispose();
 	}
+	
+	public static Screen getNewScreen(int screenID, final Zurvival gam){
+		Screen s = null;
+		switch(screenID){
+			case 0:
+				s = new MainMenuScreen(gam);
+				break;
+			case 1:
+				s = new DayGameScreen(gam);
+				break;
+			case 2:
+				s = new PrepareGameScreen(gam);
+				break;
+			case 3:
+				s = new NightGameScreen(gam);
+				break;
+			case 4:
+				s = new OptionsScreen(gam);
+				break;
+			case 5:
+				s = new StatisticsScreen(gam);
+				break;
+		}
+		return s;
+	}
 }

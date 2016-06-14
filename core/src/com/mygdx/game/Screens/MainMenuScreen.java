@@ -1,7 +1,5 @@
 package com.mygdx.game.Screens;
 
-import java.util.Iterator;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -32,6 +30,7 @@ public class MainMenuScreen implements Screen{
 	Array<BulletDentParticle> pList;
 	private long time;
 	private long lastTouchedTime;
+	public long delay;
 	
 	//Images
 	Texture titleImg;
@@ -69,6 +68,7 @@ public class MainMenuScreen implements Screen{
 		srsSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/Single Rifle Shot.mp3"));
 		time = System.currentTimeMillis();
 		lastTouchedTime = time;
+		delay = 250L;
 	}
 
 	@Override
@@ -107,7 +107,8 @@ public class MainMenuScreen implements Screen{
 		}
 		game.batch.end();
 		
-		if(Gdx.input.isTouched() && time >= lastTouchedTime + 100L){
+		if(Gdx.input.isTouched() && time >= lastTouchedTime + delay){
+			delay = 100L;
 			lastTouchedTime = System.currentTimeMillis();
 			Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(),0);
 			camera.unproject(touchPos);
@@ -118,6 +119,8 @@ public class MainMenuScreen implements Screen{
 			if(newgameBound.contains(touchPos.x,touchPos.y)){
 				lastScreen = MAINMENUSCREEN;
 				game.setScreen(new NightGameScreen(game));
+				delay = 1000L;
+				//game.setScreen(screenList.get(NIGHTGAMESCREEN));
 			}
 			
 			//Continue
