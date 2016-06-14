@@ -7,7 +7,7 @@ import java.awt.GraphicsEnvironment;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.mygdx.game.Zurvival;
+import com.mygdx.game.Game.Zurvival;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

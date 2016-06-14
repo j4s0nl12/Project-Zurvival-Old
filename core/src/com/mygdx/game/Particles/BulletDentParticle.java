@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.Particles;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -6,14 +6,14 @@ import com.badlogic.gdx.graphics.Texture;
 public class BulletDentParticle {
 	
 	private long ttl;//Time to live in milliseconds
-	Texture img;
-	float x;
-	float y;
+	public Texture img;
+	public float x;
+	public float y;
 	private long spawnedTime;
 	private long time;
 	public boolean isAlive;
 	
-	BulletDentParticle(float x, float y){
+	public BulletDentParticle(float x, float y){
 		this.x = x;
 		this.y = y;
 		this.img = new Texture("Images/Particles/BulletDent.png");

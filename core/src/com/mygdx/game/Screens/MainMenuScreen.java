@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.Screens;
 
 import java.util.Iterator;
 
@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.Game.Zurvival;
+import com.mygdx.game.Particles.BulletDentParticle;
 
 public class MainMenuScreen implements Screen{
 	
@@ -37,7 +39,7 @@ public class MainMenuScreen implements Screen{
 	//Sounds
 	Sound srsSound;//Single Rifle Shot
 	
-	MainMenuScreen(final Zurvival gam){
+	public MainMenuScreen(final Zurvival gam){
 		game = gam;
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());//Look at Desktop Launcher for Desktop Resolution
