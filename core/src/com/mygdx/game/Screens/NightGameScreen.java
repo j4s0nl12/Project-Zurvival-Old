@@ -3,6 +3,7 @@ package com.mygdx.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,9 +22,10 @@ import static com.mygdx.game.Game.Zurvival.OPTIONSSCREEN;
 import static com.mygdx.game.Game.Zurvival.STATISTICSSCREEN;
 import static com.mygdx.game.Game.Zurvival.getNewScreen;
 
-public class NightGameScreen implements Screen{
+public class NightGameScreen extends InputAdapter implements Screen{
 	
 	final Zurvival game;
+	final String TAG = NightGameScreen.class.getSimpleName();
 	OrthographicCamera camera;
 	
 	private long time;
@@ -63,10 +65,6 @@ public class NightGameScreen implements Screen{
 		leftArrowImg = new Texture("Sprites/Left Arrow.png");
 		
 		backBound = new Rectangle(Gdx.graphics.getWidth()/2 - backImg.getWidth()/2, 300, backImg.getWidth(), backImg.getHeight());
-		//upArrowBound = new Rectangle(rightArrowImg.getWidth()/2, 300, upArrowImg.getWidth(), upArrowImg.getHeight());
-		//downArrowBound = new Rectangle(150, 100, downArrowImg.getWidth(), downArrowImg.getHeight());
-		//rightArrowBound = new Rectangle(leftArrowImg.getWidth() + upArrowImg.getWidth()/2, 200, rightArrowImg.getWidth(), rightArrowImg.getHeight());
-		//leftArrowBound = new Rectangle(0, 200, leftArrowImg.getWidth(), leftArrowImg.getHeight());
 		
 		int centerX = 150;
 		int centerY = 150;
@@ -91,6 +89,7 @@ public class NightGameScreen implements Screen{
 	
 	@Override
 	public void show() {
+        Gdx.input.setInputProcessor(this);
 		delay = 250L;
 		lastTouchedTime = System.currentTimeMillis();
 	}
@@ -118,6 +117,7 @@ public class NightGameScreen implements Screen{
 		game.batch.draw(leftArrowImg, leftArrowBound.getX(), leftArrowBound.getY());
 		game.batch.end();
 		
+		/*
 		if(Gdx.input.isTouched() && time >= lastTouchedTime + delay){
 			delay = 100L;
 			lastTouchedTime = System.currentTimeMillis();
@@ -156,8 +156,42 @@ public class NightGameScreen implements Screen{
 			rightArrowTouched = false;
 			leftArrowTouched = false;
 		}
+		*/
 	}
-
+	
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		screenY = game.height - screenY;
+		Gdx.app.log(TAG, "touch down [" + screenX +", " + screenY + "]");
+		
+		if(backBound.contains(screenX, screenY)){
+			game.setScreen(screenList.get(lastScreen));
+			lastScreen = NIGHTGAMESCREEN;
+		}
+		
+		if(upArrowBound.contains(screenX, screenY)){
+			//upArrowTouched = true;
+			player.moveUp();
+		}
+		
+		if(downArrowBound.contains(screenX, screenY)){
+			//downArrowTouched = true;
+			player.moveDown();
+		}
+		
+		if(rightArrowBound.contains(screenX, screenY)){
+			//rightArrowTouched = true;
+			player.moveRight();
+		}
+		
+		if(leftArrowBound.contains(screenX, screenY)){
+			//leftArrowTouched = true;
+			player.moveLeft();
+		}
+		
+		return true;
+	}
+	
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
@@ -178,7 +212,7 @@ public class NightGameScreen implements Screen{
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
+        Gdx.input.setInputProcessor(null);
 		
 	}
 

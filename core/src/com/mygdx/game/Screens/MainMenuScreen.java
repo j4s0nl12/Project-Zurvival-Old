@@ -27,7 +27,7 @@ import static com.mygdx.game.Game.Zurvival.STATISTICSSCREEN;
 public class MainMenuScreen extends InputAdapter implements Screen{
 	
 	final Zurvival game;
-    final static String TAG = MainMenuScreen.class.getSimpleName();
+    final String TAG = MainMenuScreen.class.getSimpleName();
 	OrthographicCamera camera;
 	Array<BulletDentParticle> pList;
 	private long time;
@@ -103,7 +103,7 @@ public class MainMenuScreen extends InputAdapter implements Screen{
 		game.batch.begin();
 		game.batch.draw(titleImg, Gdx.graphics.getWidth()/2 - titleImg.getWidth()/2, Gdx.graphics.getHeight() - 350);
 		game.batch.draw(newgameImg, newgameBound.getX(), newgameBound.getY());
-		//game.batch.draw(continueImg, continueBound.getX(), 300);
+		//game.batch.draw(continueImg, continueBound.getX(), continueBound.getY());
 		game.batch.draw(optionsImg, optionsBound.getX(), optionsBound.getY());
 		game.batch.draw(statImg, statBound.getX(), statBound.getY());
 		for(BulletDentParticle p : pList){
@@ -148,8 +148,8 @@ public class MainMenuScreen extends InputAdapter implements Screen{
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log(TAG, "touch down");
-        screenY = game.height - screenY;
+    	screenY = game.height - screenY;
+        Gdx.app.log(TAG, "touch down [" + screenX + ", " + screenY + "]");
 
         fireBullet(screenX, screenY);
 
@@ -183,7 +183,8 @@ public class MainMenuScreen extends InputAdapter implements Screen{
     }
 
     public boolean touchDragged (int x, int y, int pointer) {
-        fireBullet(x, y);
+        int screenY = game.height - y;
+        fireBullet(x, screenY);
         return true;
     }
 
