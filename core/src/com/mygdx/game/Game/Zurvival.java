@@ -10,7 +10,7 @@ import com.mygdx.game.Screens.MainMenuScreen;
 import com.mygdx.game.Screens.NightGameScreen;
 import com.mygdx.game.Screens.OptionsScreen;
 import com.mygdx.game.Screens.PrepareGameScreen;
-import com.mygdx.game.Screens.RobinFunsiesScreen;
+import com.mygdx.game.robin.RobinFunsiesScreen;
 import com.mygdx.game.Screens.StatisticsScreen;
 
 public class Zurvival extends Game {

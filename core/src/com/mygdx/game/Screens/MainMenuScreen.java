@@ -149,43 +149,45 @@ public class MainMenuScreen extends InputAdapter implements Screen{
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Gdx.app.log(TAG, "touch down");
-        if(time >= lastTouchedTime + delay) {
-            delay = 100L;
-            lastTouchedTime = System.currentTimeMillis();
-            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-            pList.add(new BulletDentParticle(touchPos.x, touchPos.y));
-            srsSound.play(volume);
+        screenY = game.height - screenY;
 
-            //New Game
-            if (newgameBound.contains(touchPos.x, touchPos.y)) {
-                lastScreen = MAINMENUSCREEN;
-                //game.setScreen(new NightGameScreen(game));
-                game.setScreen(screenList.get(NIGHTGAMESCREEN));
-            }
+        fireBullet(screenX, screenY);
 
-            //Continue
-            if (continueBound.contains(touchPos.x, touchPos.y)) {
-                lastScreen = MAINMENUSCREEN;
+        //New Game
+        if (newgameBound.contains(screenX, screenY)) {
+            lastScreen = MAINMENUSCREEN;
+            //game.setScreen(new NightGameScreen(game));
+            game.setScreen(screenList.get(NIGHTGAMESCREEN));
+        }
 
-            }
+        //Continue
+        if (continueBound.contains(screenX, screenY)) {
+            lastScreen = MAINMENUSCREEN;
 
-            //Options
-            if (optionsBound.contains(touchPos.x, touchPos.y)) {
-                lastScreen = MAINMENUSCREEN;
-                game.setScreen(new OptionsScreen(game));
+        }
 
-            }
+        //Options
+        if (optionsBound.contains(screenX, screenY)) {
+            lastScreen = MAINMENUSCREEN;
+            game.setScreen(new OptionsScreen(game));
 
-            //Statistics
-            if (statBound.contains(touchPos.x, touchPos.y)) {
-                lastScreen = MAINMENUSCREEN;
-                game.setScreen(new StatisticsScreen(game));
+        }
 
-            }
+        //Statistics
+        if (statBound.contains(screenX, screenY)) {
+            lastScreen = MAINMENUSCREEN;
+            game.setScreen(new StatisticsScreen(game));
+
         }
         return true;
     }
+
+    public boolean touchDragged (int x, int y, int pointer) {
+        fireBullet(x, y);
+        return true;
+    }
+
+
 
     @Override
     public boolean keyDown(int keyCode){
@@ -195,5 +197,14 @@ public class MainMenuScreen extends InputAdapter implements Screen{
             game.showRobinFunsiesScreen();
         }
         return true;
+    }
+
+    private void fireBullet(float x, float y){
+        if(time >= lastTouchedTime + delay) {
+            delay = 100L;
+            lastTouchedTime = System.currentTimeMillis();
+            pList.add(new BulletDentParticle(x, y));
+            srsSound.play(volume);
+        }
     }
 }
