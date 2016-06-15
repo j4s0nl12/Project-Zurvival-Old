@@ -119,7 +119,6 @@ public class MainMenuScreen implements Screen{
 			//New Game
 			if(newgameBound.contains(touchPos.x,touchPos.y)){
 				lastScreen = MAINMENUSCREEN;
-				//game.setScreen(new NightGameScreen(game));
 				game.setScreen(screenList.get(NIGHTGAMESCREEN));
 			}
 			
