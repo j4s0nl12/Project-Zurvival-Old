@@ -1,6 +1,7 @@
 package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.Input.Keys;
@@ -23,9 +24,10 @@ import static com.mygdx.game.Game.Zurvival.OPTIONSSCREEN;
 import static com.mygdx.game.Game.Zurvival.STATISTICSSCREEN;
 
 
-public class MainMenuScreen implements Screen{
+public class MainMenuScreen extends InputAdapter implements Screen{
 	
 	final Zurvival game;
+    final static String TAG = MainMenuScreen.class.getSimpleName();
 	OrthographicCamera camera;
 	Array<BulletDentParticle> pList;
 	private long time;
@@ -74,6 +76,7 @@ public class MainMenuScreen implements Screen{
 
 	@Override
 	public void show() {
+        Gdx.input.setInputProcessor(this);
 		delay = 250L;
 		lastTouchedTime = System.currentTimeMillis();
 	}
@@ -107,41 +110,6 @@ public class MainMenuScreen implements Screen{
 			game.batch.draw(p.img, p.x - p.img.getWidth()/2, p.y - p.img.getHeight()/2);
 		}
 		game.batch.end();
-		
-		if(Gdx.input.isTouched() && time >= lastTouchedTime + delay){
-			delay = 100L;
-			lastTouchedTime = System.currentTimeMillis();
-			Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(),0);
-			camera.unproject(touchPos);
-			pList.add(new BulletDentParticle(touchPos.x, touchPos.y));
-			srsSound.play(volume);
-			
-			//New Game
-			if(newgameBound.contains(touchPos.x,touchPos.y)){
-				lastScreen = MAINMENUSCREEN;
-				game.setScreen(screenList.get(NIGHTGAMESCREEN));
-			}
-			
-			//Continue
-			if(continueBound.contains(touchPos.x, touchPos.y)){
-				lastScreen = MAINMENUSCREEN;
-				
-			}
-			
-			//Options
-			if(optionsBound.contains(touchPos.x, touchPos.y)){
-				lastScreen = MAINMENUSCREEN;
-				game.setScreen(new OptionsScreen(game));
-				
-			}
-			
-			//Statistics
-			if(statBound.contains(touchPos.x, touchPos.y)){
-				lastScreen = MAINMENUSCREEN;
-				game.setScreen(new StatisticsScreen(game));
-				
-			}
-		}
 	}
 
 	@Override
@@ -176,4 +144,55 @@ public class MainMenuScreen implements Screen{
 		statImg.dispose();
 		srsSound.dispose();
 	}
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        Gdx.app.log(TAG, "touch down");
+        if(time >= lastTouchedTime + delay) {
+            delay = 100L;
+            lastTouchedTime = System.currentTimeMillis();
+            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+            pList.add(new BulletDentParticle(touchPos.x, touchPos.y));
+            srsSound.play(volume);
+
+            //New Game
+            if (newgameBound.contains(touchPos.x, touchPos.y)) {
+                lastScreen = MAINMENUSCREEN;
+                //game.setScreen(new NightGameScreen(game));
+                game.setScreen(screenList.get(NIGHTGAMESCREEN));
+            }
+
+            //Continue
+            if (continueBound.contains(touchPos.x, touchPos.y)) {
+                lastScreen = MAINMENUSCREEN;
+
+            }
+
+            //Options
+            if (optionsBound.contains(touchPos.x, touchPos.y)) {
+                lastScreen = MAINMENUSCREEN;
+                game.setScreen(new OptionsScreen(game));
+
+            }
+
+            //Statistics
+            if (statBound.contains(touchPos.x, touchPos.y)) {
+                lastScreen = MAINMENUSCREEN;
+                game.setScreen(new StatisticsScreen(game));
+
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean keyDown(int keyCode){
+        Gdx.app.log(TAG, "key down");
+
+        if(keyCode == Keys.R){
+            game.showRobinFunsiesScreen();
+        }
+        return true;
+    }
 }
