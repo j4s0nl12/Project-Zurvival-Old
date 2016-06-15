@@ -1,6 +1,7 @@
 package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mygdx.game.Game.Zurvival;
@@ -28,9 +30,10 @@ import java.util.HashMap;
 /**
  * Created by robin on 6/13/2016.
  */
-public class RobinFunsiesScreen implements Screen {
+public class RobinFunsiesScreen extends InputAdapter implements Screen {
 
     final Zurvival mGame;
+    final static String TAG = RobinFunsiesScreen.class.getSimpleName();
     OrthographicCamera camera;
     ParticleEffect pe;
     TextureAtlas textureAtlas;
@@ -99,6 +102,8 @@ public class RobinFunsiesScreen implements Screen {
         fixtureDef.restitution = 0.6f; // Make it bounce a little bit
 
         Fixture fixture = body.createFixture(fixtureDef);
+
+        Gdx.input.setInputProcessor(this);
 
         shape.dispose();
 
@@ -186,5 +191,12 @@ public class RobinFunsiesScreen implements Screen {
 
             sprites.put(region.name, sprite);
         }
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        Gdx.app.error(TAG, "touch");
+        pe.setPosition(screenX, screenY);
+        return true;
     }
 }
