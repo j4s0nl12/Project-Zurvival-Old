@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -20,6 +22,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
+import com.badlogic.gdx.physics.box2d.joints.MotorJointDef;
+import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
+import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -69,7 +77,7 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
     @Override
     public void show() {
         Box2D.init();
-        world = new World(new Vector2(0, -10), true);
+        world = new World(new Vector2(-10, 0), true);
         debugRenderer = new Box2DDebugRenderer();
 
         batch = new SpriteBatch();
@@ -87,13 +95,13 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         pe.start();
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(100, 300);
-        Body body = world.createBody(bodyDef);
-        body.setUserData("orange");
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.position.set(500, 360 );
+        Body bodyB = world.createBody(bodyDef);
+        bodyB.setUserData("orange");
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(63f);
+        shape.setRadius(60f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -101,7 +109,26 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         fixtureDef.friction = 0.4f;
         fixtureDef.restitution = 0.6f; // Make it bounce a little bit
 
-        Fixture fixture = body.createFixture(fixtureDef);
+        Fixture fixture = bodyB.createFixture(fixtureDef);
+
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(500,300);
+        Body bodyA = world.createBody(bodyDef);
+        bodyA.setUserData("crate");
+
+        PolygonShape ps = new PolygonShape();
+        ps.setAsBox(55, 55);
+
+        FixtureDef fd = new FixtureDef();
+        fd.shape = ps;
+        fixtureDef.density = 0.5f;
+        fixtureDef.friction = 0.4f;
+        fixtureDef.restitution = 0.6f;
+        bodyA.createFixture(fd);
+
+        DistanceJointDef defJoint = new DistanceJointDef ();
+        defJoint.length = 100;
+        defJoint.initialize(bodyB, bodyA, new Vector2(0,0), new Vector2(128, 0));
 
         Gdx.input.setInputProcessor(this);
 
@@ -195,8 +222,8 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.error(TAG, "touch");
-        pe.setPosition(screenX, screenY);
+        Gdx.app.log(TAG, "touch");
+        pe.setPosition(screenX, mGame.height - screenY);
         return true;
     }
 }

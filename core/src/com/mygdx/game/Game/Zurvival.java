@@ -1,6 +1,7 @@
 package com.mygdx.game.Game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
@@ -23,11 +24,17 @@ public class Zurvival extends Game {
 	public static final int NIGHTGAMESCREEN = 3;
 	public static final int OPTIONSSCREEN = 4;
 	public static final int STATISTICSSCREEN = 5;
+
+    public static int width;
+    public static int height;
 	
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
 		screenList = new Array<>();
+
+        width = Gdx.graphics.getWidth();
+        height = Gdx.graphics.getHeight();
 		
 		//init screens
 		screenList.add(new MainMenuScreen(this));
