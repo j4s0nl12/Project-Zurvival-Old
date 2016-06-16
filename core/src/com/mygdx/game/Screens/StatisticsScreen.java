@@ -1,6 +1,7 @@
 package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,9 +21,10 @@ import static com.mygdx.game.Game.Zurvival.OPTIONSSCREEN;
 import static com.mygdx.game.Game.Zurvival.STATISTICSSCREEN;
 import static com.mygdx.game.Game.Zurvival.getNewScreen;
 
-public class StatisticsScreen implements Screen{
-	
+public class StatisticsScreen extends InputAdapter implements Screen{
+
 	final Zurvival game;
+	final static String TAG = StatisticsScreen.class.getSimpleName();
 	OrthographicCamera camera;
 	
 	private long time;
@@ -49,6 +51,7 @@ public class StatisticsScreen implements Screen{
 	public void show() {
 		delay = 250L;
 		lastTouchedTime = System.currentTimeMillis();
+		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override
@@ -66,19 +69,6 @@ public class StatisticsScreen implements Screen{
 		game.batch.begin();
 		game.batch.draw(backImg, backBound.getX(), backBound.getY());
 		game.batch.end();
-		
-		if(Gdx.input.isTouched() && time >= lastTouchedTime + delay){
-			delay = 100L;
-			lastTouchedTime = System.currentTimeMillis();
-			Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(),0);
-			camera.unproject(touchPos);
-			
-			if(backBound.contains(touchPos.x,touchPos.y)){
-				game.setScreen(screenList.get(lastScreen));
-				//game.setScreen(getNewScreen(lastScreen,game));
-				lastScreen = STATISTICSSCREEN;
-			}
-		}
 	}
 
 	@Override
@@ -102,12 +92,25 @@ public class StatisticsScreen implements Screen{
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+		Gdx.input.setInputProcessor(null);
 	}
 
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		screenY = game.height - screenY;
+		Gdx.app.log(TAG, "touch down [" + screenX +", " + screenY + "]");
+
+		if(backBound.contains(screenX, screenY)){
+			game.setScreen(screenList.get(lastScreen));
+			//game.setScreen(getNewScreen(lastScreen,game));
+			lastScreen = STATISTICSSCREEN;
+		}
+		return true;
 	}
 }

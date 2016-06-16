@@ -1,6 +1,7 @@
 package com.mygdx.game.robin;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -215,6 +216,14 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Gdx.app.log(TAG, "touch");
         pe.setPosition(screenX, mGame.height - screenY);
+        return true;
+    }
+
+    @Override
+    public boolean keyDown(int keyCode){
+        if(keyCode == Input.Keys.C){
+            mGame.setScreen(new CameraTest(mGame));
+        }
         return true;
     }
 }
