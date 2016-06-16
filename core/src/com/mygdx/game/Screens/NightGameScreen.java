@@ -93,6 +93,8 @@ public class NightGameScreen extends InputAdapter implements Screen{
         Gdx.input.setInputProcessor(this);
 		delay = 250L;
 		lastTouchedTime = System.currentTimeMillis();
+		player.setFireRate(300L);
+		player.setLastFiredTime(lastTouchedTime);
 	}
 
 	@Override

@@ -26,6 +26,7 @@ public class Player {
 		this.img = new Texture("Sprites/Temp Player.png");
 		this.bList = new Array<>();
 		
+		this.currentGun = "Pistol";
 		this.time = System.currentTimeMillis();
 		this.lastFiredTime = time + 1000L;
 		this.fireRate = 250L;
@@ -67,6 +68,7 @@ public class Player {
 		
 		if(Gdx.input.isTouched()){
 			if(time >= lastFiredTime + fireRate){
+				this.fireRate = getFireRate(this.currentGun);
 				this.fireBullet(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 			}
 		}
@@ -100,5 +102,25 @@ public class Player {
 	
 	public int getY(){
 		return this.y;
+	}
+	
+	public void setLastFiredTime(long time){
+		this.lastFiredTime = time;
+	}
+	
+	public void setFireRate(long time){
+		this.fireRate = time;
+	}
+	
+	public long getFireRate(String weaponType){
+		long fr;
+		switch(weaponType){
+			case "Pistol":
+				fr = 250L;
+				break;
+			default:
+				fr = 0L;
+		}
+		return fr;
 	}
 }
