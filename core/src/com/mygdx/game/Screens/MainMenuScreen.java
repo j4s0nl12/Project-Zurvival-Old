@@ -192,7 +192,7 @@ public class MainMenuScreen extends InputAdapter implements Screen{
 
     @Override
     public boolean keyDown(int keyCode){
-        Gdx.app.log(TAG, "key down");
+        Gdx.app.log(TAG, "key down: " + Keys.toString(keyCode));
 
         if(keyCode == Keys.R){
             game.showRobinFunsiesScreen();

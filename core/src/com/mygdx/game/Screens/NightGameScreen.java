@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.Game.Zurvival;
 import com.mygdx.game.Player.Player;
+import com.mygdx.game.Player.Projectile;
 
 import static com.mygdx.game.Game.Zurvival.screenList;
 import static com.mygdx.game.Game.Zurvival.lastScreen;
@@ -84,7 +85,7 @@ public class NightGameScreen extends InputAdapter implements Screen{
 		rightArrowTouched = false;
 		leftArrowTouched = false;
 		
-		player = new Player(0,0);
+		player = new Player(game.width/2 - 100, game.height/2 - 100);
 	}
 	
 	@Override
@@ -110,6 +111,9 @@ public class NightGameScreen extends InputAdapter implements Screen{
 		
 		game.batch.begin();
 		game.batch.draw(player.img, player.getX(), player.getY());
+		for(Projectile p : player.bList){
+			game.batch.draw(p.img, p.bounds.getX(), p.bounds.getY());
+		}
 		game.batch.draw(backImg, backBound.getX(), backBound.getY());
 		game.batch.draw(upArrowImg, upArrowBound.getX(), upArrowBound.getY());
 		game.batch.draw(downArrowImg, downArrowBound.getX(), downArrowBound.getY());
