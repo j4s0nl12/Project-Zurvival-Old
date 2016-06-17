@@ -1,7 +1,5 @@
 package com.mygdx.game.Player;
 
-import com.badlogic.gdx.math.Vector2;
-
 public class PistolBullet extends Projectile{
 
 	public PistolBullet(float x, float y, float dirX, float dirY) {

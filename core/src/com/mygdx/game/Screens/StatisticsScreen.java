@@ -1,80 +1,44 @@
 package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.Game.Zurvival;
 
 import static com.mygdx.game.Game.Zurvival.screenList;
 import static com.mygdx.game.Game.Zurvival.lastScreen;
-import static com.mygdx.game.Game.Zurvival.MAINMENUSCREEN;
-import static com.mygdx.game.Game.Zurvival.DAYGAMESCREEN;
-import static com.mygdx.game.Game.Zurvival.PREPAREGAMESCREEN;
-import static com.mygdx.game.Game.Zurvival.NIGHTGAMESCREEN;
-import static com.mygdx.game.Game.Zurvival.OPTIONSSCREEN;
 import static com.mygdx.game.Game.Zurvival.STATISTICSSCREEN;
-import static com.mygdx.game.Game.Zurvival.getNewScreen;
 
-public class StatisticsScreen extends InputAdapter implements Screen{
-
-	final Zurvival game;
+public class StatisticsScreen extends BaseScreen{
 	final static String TAG = StatisticsScreen.class.getSimpleName();
-	OrthographicCamera camera;
 	
-	private long time;
-	private long lastTouchedTime;
-	public long delay;
-	
-	Texture backImg;
-	Rectangle backBound;
+	Sprite backImg;
 	
 	public StatisticsScreen(final Zurvival gam){
-		game = gam;
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());//Look at Desktop Launcher for Desktop Resolution
+		super(gam);
 		
-		backImg = new Texture("Images/Menus/Back.png");
-		backBound = new Rectangle(Gdx.graphics.getWidth()/2 - backImg.getWidth()/2, 300, backImg.getWidth(), backImg.getHeight());
-		
-		time = System.currentTimeMillis();
-		lastTouchedTime = time;
-		delay = 250L;
+		backImg = new Sprite(new Texture("Images/Menus/Back.png"));
+		backImg.setPosition(game.GAME_WORLD_WIDTH/2 - backImg.getWidth()/2, game.GAME_WORLD_HEIGHT/2 - backImg.getHeight()/2);
 	}
 	
 	@Override
 	public void show() {
-		delay = 250L;
-		lastTouchedTime = System.currentTimeMillis();
-		Gdx.input.setInputProcessor(this);
+		super.show();
 	}
 
 	@Override
 	public void render(float delta) {
-		time = System.currentTimeMillis();
-		if(Gdx.input.isKeyPressed(Keys.ESCAPE))//For simple exits
-			Gdx.app.exit();
-		
-		Gdx.gl.glClearColor(0.15f, 0.2f, 0.15f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		camera.update();
-		game.batch.setProjectionMatrix(camera.combined);
+		super.render(delta);
 		
 		game.batch.begin();
-		game.batch.draw(backImg, backBound.getX(), backBound.getY());
+		backImg.draw(game.batch);
 		game.batch.end();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
+		super.resize(width, height);
 	}
 
 	@Override
@@ -91,8 +55,7 @@ public class StatisticsScreen extends InputAdapter implements Screen{
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		Gdx.input.setInputProcessor(null);
+		super.hide();
 	}
 
 	@Override
@@ -103,12 +66,13 @@ public class StatisticsScreen extends InputAdapter implements Screen{
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		screenY = game.height - screenY;
+		Vector3 pos = getProjectAt(screenX, screenY);
+		screenX = (int) pos.x;
+		screenY = (int) pos.y;
 		Gdx.app.log(TAG, "touch down [" + screenX +", " + screenY + "]");
 
-		if(backBound.contains(screenX, screenY)){
+		if(backImg.getBoundingRectangle().contains(screenX, screenY)){
 			game.setScreen(screenList.get(lastScreen));
-			//game.setScreen(getNewScreen(lastScreen,game));
 			lastScreen = STATISTICSSCREEN;
 		}
 		return true;

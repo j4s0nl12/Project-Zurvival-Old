@@ -3,14 +3,17 @@ package com.mygdx.game.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
+
+import static com.mygdx.game.Game.Zurvival.GAME_WORLD_WIDTH;
+import static com.mygdx.game.Game.Zurvival.GAME_WORLD_HEIGHT;
 
 public class Player {
 	private int x;
 	private int y;
 	
-	public Texture img;
+	public Sprite img;
 	
 	public Array<Projectile> bList;
 	private String currentGun;
@@ -23,7 +26,9 @@ public class Player {
 		this.x = x;
 		this.y = y;
 		
-		this.img = new Texture("Sprites/Temp Player.png");
+		this.img = new Sprite(new Texture("Sprites/Temp Player.png"));
+		this.img.setPosition(GAME_WORLD_WIDTH/2 - this.img.getWidth()/2, GAME_WORLD_HEIGHT/2 - this.img.getHeight()/2);
+		
 		this.bList = new Array<>();
 		
 		this.currentGun = "Pistol";

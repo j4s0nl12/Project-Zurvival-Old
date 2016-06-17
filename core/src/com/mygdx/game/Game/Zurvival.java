@@ -3,8 +3,12 @@ package com.mygdx.game.Game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Screens.DayGameScreen;
 import com.mygdx.game.Screens.MainMenuScreen;
 import com.mygdx.game.Screens.NightGameScreen;
@@ -25,14 +29,30 @@ public class Zurvival extends Game {
 	public static final int OPTIONSSCREEN = 4;
 	public static final int STATISTICSSCREEN = 5;
 
-    public static int width;
-    public static int height;
+	public static final int GAME_WORLD_WIDTH = 1600;
+	public static final int GAME_WORLD_HEIGHT = 1000;
+
+	public static OrthographicCamera camera;
+	public static Viewport viewport;
+	public static float aspectRatio;
+	
+	public static float volume;
+	
+    public static int width;//Start referring to GAME_WORLD_WIDTH instead
+    public static int height;//Start referring to GAME_WORLD_HEIGHT instead
 	
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
 		screenList = new Array<>();
-
+		
+		camera = new OrthographicCamera();
+		aspectRatio = (float)Gdx.graphics.getHeight()/(float)Gdx.graphics.getWidth();
+		//viewport = new StretchViewport(GAME_WORLD_WIDTH * aspectRatio, GAME_WORLD_HEIGHT, camera);
+		viewport = new ExtendViewport(GAME_WORLD_WIDTH * aspectRatio, GAME_WORLD_HEIGHT, camera);
+		viewport.apply();
+		camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);
+		
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
 		
@@ -44,8 +64,16 @@ public class Zurvival extends Game {
 		screenList.add(new OptionsScreen(this));
 		screenList.add(new StatisticsScreen(this));
 		
+		volume = 0.02f;
+		
 		lastScreen = MAINMENUSCREEN;
 		this.setScreen(screenList.get(MAINMENUSCREEN));
+	}
+	
+	@Override
+	public void resize(int width, int height){
+		viewport.update(width, height);
+		camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);
 	}
 
 	@Override
@@ -55,31 +83,6 @@ public class Zurvival extends Game {
 	
 	public void dispose(){
 		batch.dispose();
-	}
-	
-	public static Screen getNewScreen(int screenID, final Zurvival gam){
-		Screen s = null;
-		switch(screenID){
-			case 0:
-				s = new MainMenuScreen(gam);
-				break;
-			case 1:
-				s = new DayGameScreen(gam);
-				break;
-			case 2:
-				s = new PrepareGameScreen(gam);
-				break;
-			case 3:
-				s = new NightGameScreen(gam);
-				break;
-			case 4:
-				s = new OptionsScreen(gam);
-				break;
-			case 5:
-				s = new StatisticsScreen(gam);
-				break;
-		}
-		return s;
 	}
 
     public void showRobinFunsiesScreen() {

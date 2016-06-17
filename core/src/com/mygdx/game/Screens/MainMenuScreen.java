@@ -1,14 +1,10 @@
 package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Game.Zurvival;
@@ -24,74 +20,49 @@ import static com.mygdx.game.Game.Zurvival.OPTIONSSCREEN;
 import static com.mygdx.game.Game.Zurvival.STATISTICSSCREEN;
 
 
-public class MainMenuScreen extends InputAdapter implements Screen{
+public class MainMenuScreen extends BaseScreen{
 	
-	final Zurvival game;
     final String TAG = MainMenuScreen.class.getSimpleName();
-	OrthographicCamera camera;
 	Array<BulletDentParticle> pList;
-	private long time;
-	private long lastTouchedTime;
-	public long delay;
 	
 	//Images
-	Texture titleImg;
-	Texture newgameImg;
-	Texture continueImg;
-	Texture optionsImg;
-	Texture statImg;
-	
-	//Image bounds
-	Rectangle newgameBound;
-	Rectangle continueBound;
-	Rectangle optionsBound;
-	Rectangle statBound;
+	Sprite titleImg;
+	Sprite newgameImg;
+	Sprite continueImg;
+	Sprite optionsImg;
+	Sprite statImg;
 	
 	//Sounds
 	Sound srsSound;//Single Rifle Shot
-    float volume = 0.02f;
 	
 	public MainMenuScreen(final Zurvival gam){
-		game = gam;
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());//Look at Desktop Launcher for Desktop Resolution
+		super(gam);
 		pList = new Array<>();
 		
-		titleImg = new Texture("Images/Menus/Title.png");
-		newgameImg = new Texture("Images/Menus/New Game.png");
-		continueImg = new Texture("Images/Menus/Continue.png");
-		optionsImg = new Texture("Images/Menus/Options.png");
-		statImg = new Texture("Images/Menus/Statistics.png");
+		titleImg = new Sprite(new Texture("Images/Menus/Title.png"));
+		newgameImg = new Sprite(new Texture("Images/Menus/New Game.png"));
+		continueImg = new Sprite(new Texture("Images/Menus/Continue.png"));
+		optionsImg = new Sprite(new Texture("Images/Menus/Options.png"));
+		statImg = new Sprite(new Texture("Images/Menus/Statistics.png"));
 		
-		newgameBound = new Rectangle(Gdx.graphics.getWidth()/2 - newgameImg.getWidth()/2, 300, newgameImg.getWidth(), newgameImg.getHeight());
-		continueBound = new Rectangle(Gdx.graphics.getWidth()/2 - continueImg.getWidth()/2, 300, continueImg.getWidth(), continueImg.getHeight());
-		optionsBound = new Rectangle(Gdx.graphics.getWidth()/2 - optionsImg.getWidth()/2, 200, optionsImg.getWidth(), optionsImg.getHeight());
-		statBound = new Rectangle(Gdx.graphics.getWidth()/2 - statImg.getWidth()/2, 100, statImg.getWidth(), statImg.getHeight());
+		titleImg.scale(.2f);
+		titleImg.setPosition(game.GAME_WORLD_WIDTH/2 - titleImg.getWidth()/2, game.GAME_WORLD_HEIGHT*3/4 - titleImg.getHeight()/2);
+		newgameImg.setPosition(game.GAME_WORLD_WIDTH/2 - newgameImg.getWidth()/2, game.GAME_WORLD_HEIGHT/2 - newgameImg.getHeight()/2 - 50);
+		continueImg.setPosition(game.GAME_WORLD_WIDTH/2 - continueImg.getWidth()/2, game.GAME_WORLD_HEIGHT/2 - continueImg.getHeight()/2 - 50);
+		optionsImg.setPosition(game.GAME_WORLD_WIDTH/2 - optionsImg.getWidth()/2, game.GAME_WORLD_HEIGHT/2 - optionsImg.getHeight()/2 - 200);
+		statImg.setPosition(game.GAME_WORLD_WIDTH/2 - statImg.getWidth()/2, game.GAME_WORLD_HEIGHT/2 - statImg.getHeight()/2 - 350);
 		
 		srsSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/Single Rifle Shot.mp3"));
-		time = System.currentTimeMillis();
-		lastTouchedTime = time;
-		delay = 250L;
 	}
 
 	@Override
 	public void show() {
-        Gdx.input.setInputProcessor(this);
-		delay = 250L;
-		lastTouchedTime = System.currentTimeMillis();
+		super.show();
 	}
 
 	@Override
 	public void render(float delta) {
-		time = System.currentTimeMillis();
-		if(Gdx.input.isKeyPressed(Keys.ESCAPE))//For simple exits
-			Gdx.app.exit();
-			
-		Gdx.gl.glClearColor(0.15f, 0.2f, 0.15f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		camera.update();
-		game.batch.setProjectionMatrix(camera.combined);
+		super.render(delta);
 		
 		for(int i = 0; i < pList.size; i++){
 			pList.get(i).update(delta);
@@ -101,11 +72,12 @@ public class MainMenuScreen extends InputAdapter implements Screen{
 		}
 		
 		game.batch.begin();
-		game.batch.draw(titleImg, Gdx.graphics.getWidth()/2 - titleImg.getWidth()/2, Gdx.graphics.getHeight() - 350);
-		game.batch.draw(newgameImg, newgameBound.getX(), newgameBound.getY());
-		//game.batch.draw(continueImg, continueBound.getX(), continueBound.getY());
-		game.batch.draw(optionsImg, optionsBound.getX(), optionsBound.getY());
-		game.batch.draw(statImg, statBound.getX(), statBound.getY());
+		titleImg.draw(game.batch);
+		newgameImg.draw(game.batch);
+		//continueImg.draw(game.batch);
+		optionsImg.draw(game.batch);
+		statImg.draw(game.batch);
+		
 		for(BulletDentParticle p : pList){
 			game.batch.draw(p.img, p.x - p.img.getWidth()/2, p.y - p.img.getHeight()/2);
 		}
@@ -114,8 +86,7 @@ public class MainMenuScreen extends InputAdapter implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
+		super.resize(width, height);
 	}
 
 	@Override
@@ -133,58 +104,59 @@ public class MainMenuScreen extends InputAdapter implements Screen{
 	@Override
 	public void hide() {
 		pList.clear();
-		Gdx.input.setInputProcessor(null);
+		super.hide();
 	}
 
 	@Override
 	public void dispose() {
-		titleImg.dispose();
-		newgameImg.dispose();
-		continueImg.dispose();
-		optionsImg.dispose();
-		statImg.dispose();
+		titleImg.getTexture().dispose();
+		newgameImg.getTexture().dispose();
+		continueImg.getTexture().dispose();
+		optionsImg.getTexture().dispose();
+		statImg.getTexture().dispose();
 		srsSound.dispose();
 	}
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-    	screenY = game.height - screenY;
-        Gdx.app.log(TAG, "touch down [" + screenX + ", " + screenY + "]");
+    	Vector3 pos = getProjectAt(screenX, screenY);
+    	screenX = (int) pos.x;
+        screenY = (int) pos.y;
+    	Gdx.app.log(TAG, "touch down [" + screenX + ", " + screenY + "]");
 
         fireBullet(screenX, screenY);
 
         //New Game
-        if (newgameBound.contains(screenX, screenY)) {
+        if (newgameImg.getBoundingRectangle().contains(screenX, screenY)) {
             lastScreen = MAINMENUSCREEN;
-            //game.setScreen(new NightGameScreen(game));
             game.setScreen(screenList.get(NIGHTGAMESCREEN));
         }
 
         //Continue
-        if (continueBound.contains(screenX, screenY)) {
+        if (continueImg.getBoundingRectangle().contains(screenX, screenY)) {
             lastScreen = MAINMENUSCREEN;
 
         }
 
         //Options
-        if (optionsBound.contains(screenX, screenY)) {
+        if (optionsImg.getBoundingRectangle().contains(screenX, screenY)) {
             lastScreen = MAINMENUSCREEN;
-            game.setScreen(new OptionsScreen(game));
+            game.setScreen(screenList.get(OPTIONSSCREEN));
 
         }
 
         //Statistics
-        if (statBound.contains(screenX, screenY)) {
+        if (statImg.getBoundingRectangle().contains(screenX, screenY)) {
             lastScreen = MAINMENUSCREEN;
-            game.setScreen(new StatisticsScreen(game));
+            game.setScreen(screenList.get(STATISTICSSCREEN));
 
         }
         return true;
     }
 
     public boolean touchDragged (int x, int y, int pointer) {
-        int screenY = game.height - y;
-        fireBullet(x, screenY);
+    	Vector3 pos = getProjectAt(x, y);
+        fireBullet(pos.x, pos.y);
         return true;
     }
 
@@ -201,11 +173,11 @@ public class MainMenuScreen extends InputAdapter implements Screen{
     }
 
     private void fireBullet(float x, float y){
-        if(time >= lastTouchedTime + delay) {
-            delay = 100L;
-            lastTouchedTime = System.currentTimeMillis();
+        if(this.time >= this.lastTouchedTime + this.delay) {
+        	this.delay = 100L;
+        	this.lastTouchedTime = System.currentTimeMillis();
             pList.add(new BulletDentParticle(x, y));
-            srsSound.play(volume);
+            srsSound.play(game.volume);
         }
     }
 }

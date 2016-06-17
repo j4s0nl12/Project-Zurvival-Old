@@ -1,9 +1,12 @@
 package com.mygdx.game.Player;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+
+import static com.mygdx.game.Game.Zurvival.GAME_WORLD_WIDTH;
+import static com.mygdx.game.Game.Zurvival.GAME_WORLD_HEIGHT;
 
 public class Projectile {
 	protected Vector2 pos;
@@ -14,9 +17,7 @@ public class Projectile {
 	
 	public boolean tobeDestroyed;
 	
-	public Texture img;
-	
-	public Rectangle bounds;
+	public Sprite img;
 	
 	public Projectile(float x, float y, float dirX, float dirY){
 		this.pos = new Vector2(x,y);
@@ -27,23 +28,25 @@ public class Projectile {
 	}
 	
 	public void update(float delta){
-		if(this.bounds != null){
-			this.bounds.x += this.vel.x * this.spd * delta;
-			this.bounds.y += this.vel.y * this.spd * delta;
+		if(this.img != null){
+			float tmpX = this.img.getX() + (this.vel.x * this.spd * delta);
+			float tmpY = this.img.getY() + (this.vel.y * this.spd * delta);
+			this.img.setPosition(tmpX, tmpY);
 			
 			if(this.gravity != null){
 				Vector2 tmp = this.gravity.scl(delta);
 				this.vel.sub(tmp);
 			}
 			
-			if(!this.bounds.overlaps(new Rectangle(0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight()))){
+			if(!this.img.getBoundingRectangle().overlaps(new Rectangle(0,0,GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT))){
 				this.tobeDestroyed = true;
 			}
 		}
 	}
 	
 	public void setImageandBounds(String img){
-		this.img = new Texture(img);
-		this.bounds = new Rectangle(this.pos.x, this.pos.y, this.img.getWidth(), this.img.getHeight());
+		this.img = new Sprite(new Texture(img));
+		this.img.setOrigin(this.img.getWidth()/2, this.img.getHeight()/2);
+		this.img.setPosition(this.pos.x, this.pos.y);
 	}
 }
