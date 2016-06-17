@@ -215,7 +215,7 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Gdx.app.log(TAG, "touch");
-        pe.setPosition(screenX, mGame.height - screenY);
+        pe.setPosition(screenX, Gdx.graphics.getHeight() - screenY);
         return true;
     }
 

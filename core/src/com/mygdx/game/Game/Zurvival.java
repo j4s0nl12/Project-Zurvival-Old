@@ -41,10 +41,7 @@ public class Zurvival extends Game {
 	public static Viewport viewport;
 	
 	public static float volume;
-	
-    public static int width;//Start referring to GAME_WORLD_WIDTH instead
-    public static int height;//Start referring to GAME_WORLD_HEIGHT instead
-	
+
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
@@ -55,18 +52,7 @@ public class Zurvival extends Game {
 		viewport = new ExtendViewport(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, camera);
 		viewport.apply();
 		camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);
-		
-        width = Gdx.graphics.getWidth();
-        height = Gdx.graphics.getHeight();
-		
-		//init screens
-		screenList.add(new MainMenuScreen(this));
-		screenList.add(new DayGameScreen(this));
-		screenList.add(new PrepareGameScreen(this));
-		screenList.add(new NightGameScreen(this));
-		screenList.add(new OptionsScreen(this));
-		screenList.add(new StatisticsScreen(this));
-		
+
 		//Pref test
 		if(pref == null)
 			pref = Gdx.app.getPreferences(PREF_NAME);
@@ -78,6 +64,18 @@ public class Zurvival extends Game {
 		}else{
 			volume = pref.getFloat("volume");
 		}
+
+		/*
+		    init screens
+			Needs to be almost the last thing
+			to be called since it depends on initial variables above.
+		 */
+		screenList.add(new MainMenuScreen(this));
+		screenList.add(new DayGameScreen(this));
+		screenList.add(new PrepareGameScreen(this));
+		screenList.add(new NightGameScreen(this));
+		screenList.add(new OptionsScreen(this));
+		screenList.add(new StatisticsScreen(this));
 		
 		lastScreen = MAINMENUSCREEN;
 		this.setScreen(screenList.get(MAINMENUSCREEN));
