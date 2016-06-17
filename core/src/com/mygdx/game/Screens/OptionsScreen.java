@@ -34,7 +34,7 @@ public class OptionsScreen extends BaseScreen{
 		super(gam);
 		
 		backImg = new Sprite(new Texture("Images/Menus/Back.png"));
-		backImg.setPosition(game.GAME_WORLD_WIDTH/2 - backImg.getWidth()/2, game.GAME_WORLD_HEIGHT/2 - backImg.getHeight()/2);
+		backImg.setPosition(game.GAME_WORLD_WIDTH/2 - backImg.getWidth()/2, game.GAME_WORLD_HEIGHT/4 - backImg.getHeight()/2);
 
 		stage = new Stage(viewport);
 
@@ -50,6 +50,7 @@ public class OptionsScreen extends BaseScreen{
 		vol.addListener(new ChangeListener(){
 			public void changed (ChangeEvent event, Actor actor){
 				Gdx.app.log("UITest",  "slider: " + vol.getValue());
+				game.volume = vol.getValue();
 				game.getPref().putFloat("volume", vol.getValue());
 				game.getPref().flush();
 			}
