@@ -2,6 +2,7 @@ package com.mygdx.game.Game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,6 +23,8 @@ public class Zurvival extends Game {
 	public static int lastScreen;
 	public static Array<Screen> screenList;
 	
+	private static Preferences pref;
+	
 	public static final int MAINMENUSCREEN = 0;
 	public static final int DAYGAMESCREEN = 1;
 	public static final int PREPAREGAMESCREEN = 2;
@@ -32,9 +35,10 @@ public class Zurvival extends Game {
 	public static final int GAME_WORLD_WIDTH = 1600;
 	public static final int GAME_WORLD_HEIGHT = 1000;
 
+	private static final String PREF_NAME = "mygame_pref";
+	
 	public static OrthographicCamera camera;
 	public static Viewport viewport;
-	public static float aspectRatio;
 	
 	public static float volume;
 	
@@ -47,9 +51,8 @@ public class Zurvival extends Game {
 		screenList = new Array<>();
 		
 		camera = new OrthographicCamera();
-		aspectRatio = (float)Gdx.graphics.getHeight()/(float)Gdx.graphics.getWidth();
 		//viewport = new StretchViewport(GAME_WORLD_WIDTH * aspectRatio, GAME_WORLD_HEIGHT, camera);
-		viewport = new ExtendViewport(GAME_WORLD_WIDTH * aspectRatio, GAME_WORLD_HEIGHT, camera);
+		viewport = new ExtendViewport(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, camera);
 		viewport.apply();
 		camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);
 		
@@ -64,7 +67,17 @@ public class Zurvival extends Game {
 		screenList.add(new OptionsScreen(this));
 		screenList.add(new StatisticsScreen(this));
 		
-		volume = 0.02f;
+		//Pref test
+		if(pref == null)
+			pref = Gdx.app.getPreferences(PREF_NAME);
+		
+		if(!pref.contains("volume")){
+			volume = 0.02f;
+			pref.putFloat("volume", volume);
+			pref.flush();
+		}else{
+			volume = pref.getFloat("volume");
+		}
 		
 		lastScreen = MAINMENUSCREEN;
 		this.setScreen(screenList.get(MAINMENUSCREEN));
@@ -87,5 +100,9 @@ public class Zurvival extends Game {
 
     public void showRobinFunsiesScreen() {
         setScreen(new RobinFunsiesScreen(this));
+    }
+    
+    public Preferences getPref(){
+    	return pref;
     }
 }
