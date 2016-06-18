@@ -19,7 +19,7 @@ public class Projectile {
 	
 	public Sprite img;
 	
-	public Projectile(float x, float y, float dirX, float dirY){
+	public Projectile(float x, float y, float dirX, float dirY){//, int lane){
 		this.pos = new Vector2(x,y);
 		this.dest = new Vector2(dirX,dirY);
 		this.vel = this.dest.sub(this.pos).nor();

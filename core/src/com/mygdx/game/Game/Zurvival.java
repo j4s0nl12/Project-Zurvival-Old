@@ -34,6 +34,9 @@ public class Zurvival extends Game {
 
 	public static final int GAME_WORLD_WIDTH = 1600;
 	public static final int GAME_WORLD_HEIGHT = 1000;
+	
+	public static final int GRID_ROWS = 5;
+	public static final int GRID_COLS = 10;
 
 	private static final String PREF_NAME = "mygame_pref";
 	
