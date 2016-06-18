@@ -44,6 +44,7 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
     ExtendViewport viewport;
     Animation animation;
     BitmapFont font = new BitmapFont();
+    BodyEditorLoader loader;
     float elapsedTime = 0f;
 
     static final float TIME_STEP = 1f / 60f;
@@ -78,6 +79,7 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
 
         world = new World(new Vector2(0, -25f), true);
         debugRenderer = new Box2DDebugRenderer();
+        loader = new BodyEditorLoader(Gdx.files.internal("Sprites/sheep0001.json"));
 
         batch = new SpriteBatch();
 
@@ -135,7 +137,6 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
                 if(o instanceof Animation){
                     TextureRegion region = animation.getKeyFrame(elapsedTime,true);
 
-                    System.out.println(b.getPosition().toString());
                     batch.draw(region,
                             b.getPosition().x, b.getPosition().y,
                             0, 0,
@@ -211,9 +212,16 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
     }
 
     private void createSheep(float x, float y){
+
+//        Random random = new Random();
+//        float angle = (float) random.nextInt() * MathUtils.degreesToRadians;
+
+        TextureRegion region = animation.getKeyFrame(0);
+
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(x, y );
+//        bodyDef.rotation = angle;
+        bodyDef.position.set(x - region.getRegionWidth()/2, y - region.getRegionHeight()/2);
         Body sheep = world.createBody(bodyDef);
         sheep.setUserData(animation);
 
@@ -222,12 +230,7 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         fixtureDef.friction = 0.4f;
         fixtureDef.restitution = 0.6f; // Make it bounce a little bit
 
-        BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("Sprites/sheep0001.json"));
-        loader.attachFixture(sheep, "sheep", fixtureDef, animation.getKeyFrame(0).getRegionWidth());
-
-//        Random random = new Random();
-//        float angle = (float) random.nextInt() * MathUtils.degreesToRadians;
-//        sheep.setTransform(x, y, angle);
+        loader.attachFixture(sheep, "sheep", fixtureDef, region.getRegionWidth());
 
         world.getBodies(bodies);
     }
