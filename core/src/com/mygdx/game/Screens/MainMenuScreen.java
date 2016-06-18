@@ -10,16 +10,6 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Game.Zurvival;
 import com.mygdx.game.Particles.BulletDentParticle;
 
-import static com.mygdx.game.Game.Zurvival.screenList;
-import static com.mygdx.game.Game.Zurvival.lastScreen;
-import static com.mygdx.game.Game.Zurvival.MAINMENUSCREEN;
-import static com.mygdx.game.Game.Zurvival.DAYGAMESCREEN;
-import static com.mygdx.game.Game.Zurvival.PREPAREGAMESCREEN;
-import static com.mygdx.game.Game.Zurvival.NIGHTGAMESCREEN;
-import static com.mygdx.game.Game.Zurvival.OPTIONSSCREEN;
-import static com.mygdx.game.Game.Zurvival.STATISTICSSCREEN;
-
-
 public class MainMenuScreen extends BaseScreen{
 	
     final String TAG = MainMenuScreen.class.getSimpleName();
@@ -128,27 +118,27 @@ public class MainMenuScreen extends BaseScreen{
 
         //New Game
         if (newgameImg.getBoundingRectangle().contains(screenX, screenY)) {
-            lastScreen = MAINMENUSCREEN;
-            game.setScreen(screenList.get(NIGHTGAMESCREEN));
+            game.lastScreen = game.MAINMENUSCREEN;
+            game.setScreen(game.screenList.get(game.NIGHTGAMESCREEN));
         }
 
         //Continue
         if (continueImg.getBoundingRectangle().contains(screenX, screenY)) {
-            lastScreen = MAINMENUSCREEN;
+            game.lastScreen = game.MAINMENUSCREEN;
 
         }
 
         //Options
         if (optionsImg.getBoundingRectangle().contains(screenX, screenY)) {
-            lastScreen = MAINMENUSCREEN;
-            game.setScreen(screenList.get(OPTIONSSCREEN));
+        	game.lastScreen = game.MAINMENUSCREEN;
+            game.setScreen(game.screenList.get(game.OPTIONSSCREEN));
 
         }
 
         //Statistics
         if (statImg.getBoundingRectangle().contains(screenX, screenY)) {
-            lastScreen = MAINMENUSCREEN;
-            game.setScreen(screenList.get(STATISTICSSCREEN));
+        	game.lastScreen = game.MAINMENUSCREEN;
+            game.setScreen(game.screenList.get(game.STATISTICSSCREEN));
 
         }
         return true;

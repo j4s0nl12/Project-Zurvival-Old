@@ -8,15 +8,6 @@ import com.mygdx.game.Game.Zurvival;
 import com.mygdx.game.Player.Player;
 import com.mygdx.game.Player.Projectile;
 
-import static com.mygdx.game.Game.Zurvival.screenList;
-import static com.mygdx.game.Game.Zurvival.lastScreen;
-import static com.mygdx.game.Game.Zurvival.MAINMENUSCREEN;
-import static com.mygdx.game.Game.Zurvival.DAYGAMESCREEN;
-import static com.mygdx.game.Game.Zurvival.PREPAREGAMESCREEN;
-import static com.mygdx.game.Game.Zurvival.NIGHTGAMESCREEN;
-import static com.mygdx.game.Game.Zurvival.OPTIONSSCREEN;
-import static com.mygdx.game.Game.Zurvival.STATISTICSSCREEN;
-
 public class NightGameScreen extends BaseScreen{
 	
 	final String TAG = NightGameScreen.class.getSimpleName();
@@ -87,8 +78,8 @@ public class NightGameScreen extends BaseScreen{
 		Gdx.app.log(TAG, "touch down [" + screenX +", " + screenY + "]");
 		
 		if(backImg.getBoundingRectangle().contains(screenX, screenY)){
-			game.setScreen(screenList.get(lastScreen));
-			lastScreen = NIGHTGAMESCREEN;
+			game.setScreen(game.screenList.get(game.lastScreen));
+			game.lastScreen = game.NIGHTGAMESCREEN;
 		}
 		
 		if(upArrowImg.getBoundingRectangle().contains(screenX, screenY)){

@@ -15,11 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mygdx.game.Game.Zurvival;
 
-import static com.mygdx.game.Game.Zurvival.screenList;
-import static com.mygdx.game.Game.Zurvival.lastScreen;
-import static com.mygdx.game.Game.Zurvival.OPTIONSSCREEN;
-import static com.mygdx.game.Game.Zurvival.viewport;
-
 public class OptionsScreen extends BaseScreen{
 	final static String TAG = OptionsScreen.class.getSimpleName();
 	
@@ -36,7 +31,7 @@ public class OptionsScreen extends BaseScreen{
 		backImg = new Sprite(new Texture("Images/Menus/Back.png"));
 		backImg.setPosition(game.GAME_WORLD_WIDTH/2 - backImg.getWidth()/2, game.GAME_WORLD_HEIGHT/4 - backImg.getHeight()/2);
 
-		stage = new Stage(viewport);
+		stage = new Stage(game.viewport);
 
 		atlas = new TextureAtlas("data/uiskin.atlas");
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -118,8 +113,8 @@ public class OptionsScreen extends BaseScreen{
         Gdx.app.log(TAG, "touch down [" + screenX +", " + screenY + "]");
 
         if(backImg.getBoundingRectangle().contains(screenX, screenY)){
-            game.setScreen(screenList.get(lastScreen));
-            lastScreen = OPTIONSSCREEN;
+            game.setScreen(game.screenList.get(game.lastScreen));
+            game.lastScreen = game.OPTIONSSCREEN;
         }
         return true;
     }
