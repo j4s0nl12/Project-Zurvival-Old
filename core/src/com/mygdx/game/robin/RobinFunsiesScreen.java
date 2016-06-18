@@ -4,33 +4,31 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mygdx.game.Game.Zurvival;
 
 import java.util.HashMap;
-import java.util.Random;
 
 /**
  * Created by robin on 6/13/2016.
@@ -44,9 +42,9 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
     TextureAtlas textureAtlas;
     SpriteBatch batch;
     ExtendViewport viewport;
-    Texture texture;
-    Sprite sprite;
+    Animation animation;
     BitmapFont font = new BitmapFont();
+    float elapsedTime = 0f;
 
     static final float TIME_STEP = 1f / 60f;
     static final int VELOCITY_ITERATIONS = 6;
@@ -86,12 +84,8 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 
-        textureAtlas = new TextureAtlas("sprites-packed/pack.atlas");
-        texture = new Texture(Gdx.files.internal("Sprites/sheep0001.png"));
-
-        sprite = new Sprite(texture);
-
-        addSprites();
+        textureAtlas = new TextureAtlas(Gdx.files.internal("Sprites/sheep-packed/pack.atlas"));
+        animation = new Animation(1f/15f, textureAtlas.getRegions());
 
         pe = new ParticleEffect();
         pe.load(Gdx.files.internal("Images/Particles/BulletFire.particle"),  Gdx.files.internal("Images/Particles/"));
@@ -118,8 +112,6 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
 
         rect.dispose();
 
-        sprite.setOrigin(0, 0);
-
         Gdx.input.setInputProcessor(this);
 
         world.getBodies(bodies);
@@ -130,6 +122,8 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        elapsedTime += delta;
+
         batch.begin();
 
         /*
@@ -138,17 +132,23 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         for (Body b : bodies) {
             if(b!=null){
                 Object o = b.getUserData();
-                if(o instanceof Sprite){
-                    Sprite s = (Sprite) o;
-                    s.setPosition(b.getPosition().x, b.getPosition().y);
-                    s.setRotation(MathUtils.radiansToDegrees * b.getAngle());
-                    sprite.draw(batch);
+                if(o instanceof Animation){
+                    TextureRegion region = animation.getKeyFrame(elapsedTime,true);
+
+                    System.out.println(b.getPosition().toString());
+                    batch.draw(region,
+                            b.getPosition().x, b.getPosition().y,
+                            0, 0,
+                            region.getRegionWidth(), region.getRegionHeight(),
+                            1, 1, MathUtils.radiansToDegrees * b.getAngle());
                 }
             }
         }
 
-        pe.update(Gdx.graphics.getDeltaTime());
+        pe.update(delta);
         pe.draw(batch);
+
+        batch.draw(animation.getKeyFrame(elapsedTime,true),0,20);
 
         font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, Gdx.graphics.getHeight()-10);
         batch.end();
@@ -156,6 +156,7 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         if(pe.isComplete()){
             pe.reset();
         }
+
         debugRenderer.render(world, camera.combined);
 
         // recommended at end of render
@@ -193,27 +194,9 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         world.dispose();
     }
 
-    private void drawSprite(String name, float x, float y) {
-        Sprite sprite = sprites.get(name);
-
-        sprite.setPosition(x, y);
-
-        sprite.draw(batch);
-    }
-
-    private void addSprites() {
-        Array<TextureAtlas.AtlasRegion> regions = textureAtlas.getRegions();
-
-        for (TextureAtlas.AtlasRegion region : regions) {
-            Sprite sprite = textureAtlas.createSprite(region.name);
-
-            sprites.put(region.name, sprite);
-        }
-    }
-
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log(TAG, "touch");
+        //Gdx.app.log(TAG, "touch");
         screenY = Gdx.graphics.getHeight() - screenY;
         createSheep(screenX, screenY);
         return true;
@@ -232,7 +215,7 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y );
         Body sheep = world.createBody(bodyDef);
-        sheep.setUserData(sprite);
+        sheep.setUserData(animation);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.density = 0.5f;
@@ -240,7 +223,7 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         fixtureDef.restitution = 0.6f; // Make it bounce a little bit
 
         BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("Sprites/sheep0001.json"));
-        loader.attachFixture(sheep, "sheep", fixtureDef, sprite.getWidth());
+        loader.attachFixture(sheep, "sheep", fixtureDef, animation.getKeyFrame(0).getRegionWidth());
 
 //        Random random = new Random();
 //        float angle = (float) random.nextInt() * MathUtils.degreesToRadians;
