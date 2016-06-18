@@ -15,8 +15,8 @@ public class DesktopLauncher {
 		//GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		//DisplayMode dm = gd.getDisplayMode();
 		config.title = "Project: Zurvival";
-		config.width = 1280; //dm.getWidth();
-		config.height = 800; //dm.getHeight();
+		config.width = 1600; //dm.getWidth();
+		config.height = 1000; //dm.getHeight();
 		new LwjglApplication(new Zurvival(), config);
 	}
 }

@@ -208,6 +208,9 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         if(keyCode == Input.Keys.C){
             mGame.setScreen(new CameraTest(mGame));
         }
+        if(keyCode ==Input.Keys.T){
+            mGame.setScreen(new TiledMapTest(mGame));
+        }
         return true;
     }
 
@@ -228,7 +231,7 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.density = 0.5f;
         fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0.6f; // Make it bounce a little bit
+        fixtureDef.restitution = 10f; // Make it bounce a little bit
 
         loader.attachFixture(sheep, "sheep", fixtureDef, region.getRegionWidth());
 
