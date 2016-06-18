@@ -3,7 +3,11 @@ package com.mygdx.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Game.Zurvival;
 import com.mygdx.game.Player.Player;
 import com.mygdx.game.Player.Projectile;
@@ -11,6 +15,9 @@ import com.mygdx.game.Player.Projectile;
 public class NightGameScreen extends BaseScreen{
 	
 	final String TAG = NightGameScreen.class.getSimpleName();
+	
+	World world;
+	Body body;
 	
 	Player player;
 	
@@ -39,6 +46,11 @@ public class NightGameScreen extends BaseScreen{
 		downArrowImg.setPosition(centerX, centerY - downArrowImg.getHeight()/div);
 		rightArrowImg.setPosition(centerX + rightArrowImg.getWidth()/div, centerY);
 		leftArrowImg.setPosition(centerX - leftArrowImg.getWidth()/div, centerY);
+		
+		float gravity = 0;// -98f;//To be determined
+		world = new World(new Vector2(0,gravity), true);
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyDef.BodyType.DynamicBody;
 		
 		player = new Player(game.GAME_WORLD_WIDTH/2, game.GAME_WORLD_HEIGHT/2);
 	}

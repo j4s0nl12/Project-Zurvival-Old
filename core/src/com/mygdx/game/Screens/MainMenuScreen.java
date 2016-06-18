@@ -69,7 +69,8 @@ public class MainMenuScreen extends BaseScreen{
 		statImg.draw(game.batch);
 		
 		for(BulletDentParticle p : pList){
-			game.batch.draw(p.img, p.x - p.img.getWidth()/2, p.y - p.img.getHeight()/2);
+			p.img.draw(game.batch);
+			//game.batch.draw(p.img, p.x - p.img.getWidth()/2, p.y - p.img.getHeight()/2);
 		}
 		game.batch.end();
 	}
@@ -164,7 +165,7 @@ public class MainMenuScreen extends BaseScreen{
 
     private void fireBullet(float x, float y){
         if(this.time >= this.lastTouchedTime + this.delay) {
-        	this.delay = 100L;
+        	this.delay = DEFAULTDELAY;
         	this.lastTouchedTime = System.currentTimeMillis();
             pList.add(new BulletDentParticle(x, y));
             srsSound.play(game.volume);

@@ -12,6 +12,8 @@ public class BaseScreen extends InputAdapter implements Screen{
 	
 	final Zurvival game;
 	
+	final static long DEFAULTDELAY = 80L;
+	
 	public long time;
 	public long lastTouchedTime;
 	public long delay;
