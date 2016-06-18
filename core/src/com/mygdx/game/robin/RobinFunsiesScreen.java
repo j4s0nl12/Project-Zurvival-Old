@@ -4,12 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -39,6 +43,9 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
     TextureAtlas textureAtlas;
     SpriteBatch batch;
     ExtendViewport viewport;
+    Texture texture;
+    Sprite sprite;
+    BitmapFont font = new BitmapFont();
 
     static final float TIME_STEP = 1f / 60f;
     static final int VELOCITY_ITERATIONS = 6;
@@ -69,7 +76,8 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
     @Override
     public void show() {
         Box2D.init();
-        world = new World(new Vector2(-10, 0), true);
+
+        world = new World(new Vector2(0, -25f), true);
         debugRenderer = new Box2DDebugRenderer();
 
         batch = new SpriteBatch();
@@ -78,6 +86,9 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 
         textureAtlas = new TextureAtlas("sprites-packed/pack.atlas");
+        texture = new Texture(Gdx.files.internal("Sprites/sheep0001.png"));
+
+        sprite = new Sprite(texture);
 
         addSprites();
 
@@ -87,44 +98,39 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         pe.start();
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(500, 360 );
-        Body bodyB = world.createBody(bodyDef);
-        bodyB.setUserData("orange");
-
-        CircleShape shape = new CircleShape();
-        shape.setRadius(60f);
+        Body sheep = world.createBody(bodyDef);
+        sheep.setUserData(sprite);
 
         FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
         fixtureDef.density = 0.5f;
         fixtureDef.friction = 0.4f;
         fixtureDef.restitution = 0.6f; // Make it bounce a little bit
 
-        Fixture fixture = bodyB.createFixture(fixtureDef);
+        BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("Sprites/sheep0001.json"));
 
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(500,300);
-        Body bodyA = world.createBody(bodyDef);
-        bodyA.setUserData("crate");
+        loader.attachFixture(sheep, "Name", fixtureDef, sprite.getWidth());
 
-        PolygonShape ps = new PolygonShape();
-        ps.setAsBox(55, 55);
+        BodyDef bd = new BodyDef();
+        bd.type = BodyDef.BodyType.StaticBody;
+        bd.position.set(500, 0 );
+        Body box = world.createBody(bd);
+        box.setUserData("ground");
+
+        PolygonShape rect = new PolygonShape();
+        rect.setAsBox(1000, 20);
 
         FixtureDef fd = new FixtureDef();
-        fd.shape = ps;
-        fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0.6f;
-        bodyA.createFixture(fd);
+        fd.shape = rect;
+        fd.density = 0.5f;
+        fd.friction = 0.4f;
+        fd.restitution = 0.6f;
+        box.createFixture(fd);
 
-        DistanceJointDef defJoint = new DistanceJointDef ();
-        defJoint.length = 100;
-        defJoint.initialize(bodyB, bodyA, new Vector2(0,0), new Vector2(128, 0));
+        rect.dispose();
 
         Gdx.input.setInputProcessor(this);
-
-        shape.dispose();
 
         world.getBodies(bodies);
     }
@@ -134,24 +140,29 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        /*
+            physics stuffs
+         */
+
+        for (Body b : bodies) {
+            if(b!=null){
+                Object o = b.getUserData();
+                if(o instanceof Sprite){
+                    Sprite s = (Sprite) o;
+                    s.setPosition(b.getPosition().x, b.getPosition().y);
+                    s.setRotation(MathUtils.radiansToDegrees * b.getAngle());
+                }
+            }
+        }
+
         batch.begin();
 
         pe.update(Gdx.graphics.getDeltaTime());
         pe.draw(batch);
 
-        drawSprite("banana", 0, 0);
-        drawSprite("cherries", 100, 100);
+        sprite.draw(batch);
 
-        for (Body b : bodies) {
-            // Get the body's user data - in this example, our user
-            // data is an instance of the Entity class
-            if (b != null) {
-                String key = (String) b.getUserData();
-                Sprite sprite = sprites.get(key);
-                drawSprite(key, b.getPosition().x - sprite.getWidth()/2, b.getPosition().y - sprite.getHeight()/2);
-            }
-        }
-
+        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, Gdx.graphics.getHeight()-10);
         batch.end();
 
         if(pe.isComplete()){
