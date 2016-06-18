@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mygdx.game.Game.Zurvival;
 
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Created by robin on 6/13/2016.
@@ -97,20 +98,7 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         pe.getEmitters().first().setPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
         pe.start();
 
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(500, 360 );
-        Body sheep = world.createBody(bodyDef);
-        sheep.setUserData(sprite);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0.6f; // Make it bounce a little bit
-
-        BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("Sprites/sheep0001.json"));
-
-        loader.attachFixture(sheep, "Name", fixtureDef, sprite.getWidth());
+        createSheep(500, 300);
 
         BodyDef bd = new BodyDef();
         bd.type = BodyDef.BodyType.StaticBody;
@@ -130,6 +118,8 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
 
         rect.dispose();
 
+        sprite.setOrigin(0, 0);
+
         Gdx.input.setInputProcessor(this);
 
         world.getBodies(bodies);
@@ -140,10 +130,11 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        batch.begin();
+
         /*
             physics stuffs
-         */
-
+        */
         for (Body b : bodies) {
             if(b!=null){
                 Object o = b.getUserData();
@@ -151,16 +142,13 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
                     Sprite s = (Sprite) o;
                     s.setPosition(b.getPosition().x, b.getPosition().y);
                     s.setRotation(MathUtils.radiansToDegrees * b.getAngle());
+                    sprite.draw(batch);
                 }
             }
         }
 
-        batch.begin();
-
         pe.update(Gdx.graphics.getDeltaTime());
         pe.draw(batch);
-
-        sprite.draw(batch);
 
         font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, Gdx.graphics.getHeight()-10);
         batch.end();
@@ -226,7 +214,8 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Gdx.app.log(TAG, "touch");
-        pe.setPosition(screenX, Gdx.graphics.getHeight() - screenY);
+        screenY = Gdx.graphics.getHeight() - screenY;
+        createSheep(screenX, screenY);
         return true;
     }
 
@@ -236,5 +225,27 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
             mGame.setScreen(new CameraTest(mGame));
         }
         return true;
+    }
+
+    private void createSheep(float x, float y){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(x, y );
+        Body sheep = world.createBody(bodyDef);
+        sheep.setUserData(sprite);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.density = 0.5f;
+        fixtureDef.friction = 0.4f;
+        fixtureDef.restitution = 0.6f; // Make it bounce a little bit
+
+        BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("Sprites/sheep0001.json"));
+        loader.attachFixture(sheep, "sheep", fixtureDef, sprite.getWidth());
+
+//        Random random = new Random();
+//        float angle = (float) random.nextInt() * MathUtils.degreesToRadians;
+//        sheep.setTransform(x, y, angle);
+
+        world.getBodies(bodies);
     }
 }
