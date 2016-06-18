@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
@@ -198,8 +199,8 @@ public class RobinFunsiesScreen extends InputAdapter implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         //Gdx.app.log(TAG, "touch");
-        screenY = Gdx.graphics.getHeight() - screenY;
-        createSheep(screenX, screenY);
+        Vector3 worldCoordinates = camera.unproject(new Vector3(screenX,screenY,0));
+        createSheep(worldCoordinates.x, worldCoordinates.y);
         return true;
     }
 

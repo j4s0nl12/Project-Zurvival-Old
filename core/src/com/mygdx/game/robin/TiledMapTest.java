@@ -7,7 +7,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -25,21 +29,27 @@ import com.mygdx.game.Game.Zurvival;
  */
 public class TiledMapTest extends InputAdapter implements Screen {
 
-    final static float SCALE = 3f;
+    //final static float SCALE = 1f;
 
     Zurvival mGame;
     TiledMap tiledMap;
     OrthographicCamera camera;
     Viewport viewport;
     SpriteBatch batch;
-    OrthogonalTiledMapRenderer renderer;
+    CustomRenderer renderer;
     TiledMapTileLayer mapObjects;
     ShapeRenderer debugRenderer;
-    Vector3 center;
 
     int columns;
     int rows;
+    float mapWidth;
+    float mapHeight;
     float tileSize;
+
+    Animation animation;
+    TextureAtlas textureAtlas;
+    float elapsedTime;
+    boolean isFlipped;
 
     public TiledMapTest(Zurvival game) {
         mGame = game;
@@ -53,7 +63,7 @@ public class TiledMapTest extends InputAdapter implements Screen {
         viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         debugRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
-        renderer = new OrthogonalTiledMapRenderer(tiledMap, SCALE);
+        renderer = new CustomRenderer(tiledMap, camera);
         Gdx.input.setInputProcessor(this);
 
         mapObjects = (TiledMapTileLayer)tiledMap.getLayers().get("map objects");
@@ -61,32 +71,46 @@ public class TiledMapTest extends InputAdapter implements Screen {
         columns = mapObjects.getWidth();
         rows = mapObjects.getHeight();
         tileSize = mapObjects.getTileHeight();
+        mapWidth = columns * tileSize;
+        mapHeight = rows * tileSize;
 
-        //TODO can't seem to default a center for camera
-        center = new Vector3(Gdx.graphics.getWidth()/2,
-                Gdx.graphics.getHeight()/2, 0);
-        camera.position.set(center);
-        camera.translate(-32, 0);
-        camera.update();
+        camera.position.set(new Vector3(mapWidth/2, mapHeight/2, 0));
+        camera.zoom = 0.1f;
+
+        textureAtlas = new TextureAtlas(Gdx.files.internal("Sprites/sheep-packed/pack.atlas"));
+        animation = new Animation(1f/15f, textureAtlas.getRegions());
+
+        renderer.addAnimation(animation);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        elapsedTime += delta;
 
         camera.update();
         renderer.setView(camera);
         renderer.render();
+
+//        batch.begin();
+//        TextureRegion region = animation.getKeyFrame(elapsedTime, true);
+        //region.flip(isFlipped, false);
+
+//        batch.draw(region,
+//                camera.position.x, camera.position.y,
+//                0, 0,
+//                region.getRegionWidth(), region.getRegionHeight(),
+//                0.3f, 0.3f,
+//                0);
+//        batch.end();
 
         drawGrid();
     }
 
     @Override
     public void resize(int width, int height) {
-        camera.viewportWidth = width;
-        camera.viewportHeight = height;
-        camera.position.set(width/2f, height/2f, 0);
+        viewport.update(width, height);
         batch.setProjectionMatrix(camera.combined);
     }
 
@@ -112,14 +136,18 @@ public class TiledMapTest extends InputAdapter implements Screen {
 
     @Override
     public boolean keyUp(int keycode) {
-        if(keycode == Input.Keys.LEFT)
-            camera.translate(-32,0);
-        if(keycode == Input.Keys.RIGHT)
-            camera.translate(32,0);
+        if (keycode == Input.Keys.LEFT) {
+            isFlipped = true;
+            camera.translate(-5, 0);
+        }
+        if (keycode == Input.Keys.RIGHT) {
+            isFlipped = false;
+            camera.translate(5, 0);
+        }
         if(keycode == Input.Keys.UP)
-            camera.translate(0,-32);
+            camera.translate(0,5);
         if(keycode == Input.Keys.DOWN)
-            camera.translate(0,32);
+            camera.translate(0,-5);
         if(keycode == Input.Keys.NUM_1)
             tiledMap.getLayers().get(0).setVisible(!tiledMap.getLayers().get(0).isVisible());
         if(keycode == Input.Keys.NUM_2)
@@ -135,17 +163,14 @@ public class TiledMapTest extends InputAdapter implements Screen {
 
             sr.begin(ShapeRenderer.ShapeType.Line);
 
-            float width = tileSize * columns * SCALE;
-            float height = tileSize * rows * SCALE;
-
             for(int i = 0; i <= rows; i++){
-                Vector2 start = new Vector2(0, i*tileSize * SCALE);
-                Vector2 end = new Vector2(width, i*tileSize * SCALE);
+                Vector2 start = new Vector2(0, i*tileSize);
+                Vector2 end = new Vector2(mapWidth, i*tileSize);
                 drawDebugLine(start, end, camera.combined);
             }
             for(int i = 0; i <= columns; i++){
-                Vector2 start = new Vector2(i*tileSize * SCALE, 0);
-                Vector2 end = new Vector2(i*tileSize * SCALE, height);
+                Vector2 start = new Vector2(i*tileSize, 0);
+                Vector2 end = new Vector2(i*tileSize, mapHeight);
                 drawDebugLine(start, end, camera.combined);
             }
             sr.end();
