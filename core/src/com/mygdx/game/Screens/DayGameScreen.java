@@ -1,18 +1,24 @@
 package com.mygdx.game.Screens;
 
-import com.badlogic.gdx.Screen;
 import com.mygdx.game.Game.Zurvival;
 
-public class DayGameScreen implements Screen{
-	final Zurvival game;
+public class DayGameScreen extends BaseScreen{
+	final static String TAG = DayGameScreen.class.getSimpleName();
 	
 	public DayGameScreen(final Zurvival gam){
-		game = gam;
+		super(gam);
+	}
+	
+	public void init(){
+		
+		super.init();
 	}
 	
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
+		if(!this.isInit)
+			this.init();
+		super.show();
 		
 	}
 
@@ -24,8 +30,7 @@ public class DayGameScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
+		super.resize(width, height);
 	}
 
 	@Override
@@ -42,8 +47,7 @@ public class DayGameScreen implements Screen{
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
+        super.hide();
 	}
 
 	@Override

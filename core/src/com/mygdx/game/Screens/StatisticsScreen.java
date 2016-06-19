@@ -17,13 +17,19 @@ public class StatisticsScreen extends BaseScreen{
 	
 	public StatisticsScreen(final Zurvival gam){
 		super(gam);
-		
+	}
+	
+	public void init(){		
 		backImg = new Sprite(new Texture("Images/Menus/Back.png"));
 		backImg.setPosition(game.GAME_WORLD_WIDTH/2 - backImg.getWidth()/2, game.GAME_WORLD_HEIGHT/2 - backImg.getHeight()/2);
+	
+		super.init();
 	}
 	
 	@Override
 	public void show() {
+		if(!this.isInit)
+			this.init();
 		super.show();
 	}
 

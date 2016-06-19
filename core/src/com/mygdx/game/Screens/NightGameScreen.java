@@ -30,7 +30,9 @@ public class NightGameScreen extends BaseScreen{
 	
 	public NightGameScreen(final Zurvival gam){
 		super(gam);
-		
+	}
+	
+	public void init(){
 		backImg = new Sprite(new Texture("Images/Menus/Back.png"));
 		upArrowImg = new Sprite(new Texture("Sprites/Up Arrow.png"));
 		downArrowImg = new Sprite(new Texture("Sprites/Down Arrow.png"));
@@ -53,10 +55,13 @@ public class NightGameScreen extends BaseScreen{
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
 		
 		player = new Player(game.GAME_WORLD_WIDTH/2, game.GAME_WORLD_HEIGHT/2);
+		super.init();
 	}
 	
 	@Override
 	public void show() {
+		if(!this.isInit)
+			this.init();
 		super.show();
 		player.setFireRate(300L);
 		player.setLastFiredTime(lastTouchedTime);

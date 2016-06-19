@@ -18,14 +18,18 @@ public class BaseScreen extends InputAdapter implements Screen{
 	public long lastTouchedTime;
 	public long delay;
 	
+	public boolean isInit;
+	
 	public BaseScreen(final Zurvival gam){
 		game = gam;
-		
-		//game.viewport.apply();
-		
+		this.isInit = false;
+	}
+	
+	public void init(){
 		this.time = System.currentTimeMillis();
 		this.lastTouchedTime = time;
 		this.delay = 250L;
+		this.isInit = true;
 	}
 	
 	@Override

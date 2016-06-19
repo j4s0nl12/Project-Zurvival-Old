@@ -27,6 +27,10 @@ public class MainMenuScreen extends BaseScreen{
 	
 	public MainMenuScreen(final Zurvival gam){
 		super(gam);
+		this.init();
+	}
+	
+	public void init(){
 		pList = new Array<>();
 		
 		titleImg = new Sprite(new Texture("Images/Menus/Title.png"));
@@ -43,7 +47,9 @@ public class MainMenuScreen extends BaseScreen{
 		statImg.setPosition(game.GAME_WORLD_WIDTH/2 - statImg.getWidth()/2, game.GAME_WORLD_HEIGHT/2 - statImg.getHeight()/2 - 350);
 		
 		srsSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/Single Rifle Shot.mp3"));
-	}
+
+		super.init();
+		}
 
 	@Override
 	public void show() {

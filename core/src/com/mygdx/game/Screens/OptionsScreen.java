@@ -27,7 +27,9 @@ public class OptionsScreen extends BaseScreen{
 	
 	public OptionsScreen(final Zurvival gam){
 		super(gam);
-		
+	}
+	
+	public void init(){
 		backImg = new Sprite(new Texture("Images/Menus/Back.png"));
 		backImg.setPosition(game.GAME_WORLD_WIDTH/2 - backImg.getWidth()/2, game.GAME_WORLD_HEIGHT/4 - backImg.getHeight()/2);
 
@@ -51,10 +53,13 @@ public class OptionsScreen extends BaseScreen{
 			}
 		});
 		stage.addActor(vol);
+		super.init();
 	}
 	
 	@Override
 	public void show() {
+		if(!this.isInit)
+			this.init();
 		super.show();
 		InputMultiplexer inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(stage);
