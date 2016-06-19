@@ -42,6 +42,9 @@ public class OptionsScreen extends BaseScreen{
 		vol = new Slider(0, 1, 0.01f, false, skin);
 		vol.setValue(game.getPref().getFloat("volume"));
 		vol.setWidth(game.GAME_WORLD_WIDTH/2);
+		vol.getStyle().background.setMinHeight(15);
+		vol.getStyle().knob.setMinHeight(25);
+		vol.getStyle().knob.setMinWidth(25);
 		vol.setPosition(game.GAME_WORLD_WIDTH/2, game.GAME_WORLD_HEIGHT/2 - vol.getHeight()/2, 0);
 		vol.setAnimateDuration(0.3f);
 		vol.addListener(new ChangeListener(){
