@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Game.Zurvival;
+import com.mygdx.game.Grid.Grid;
 import com.mygdx.game.Player.Player;
 import com.mygdx.game.Player.Projectile;
 
@@ -16,9 +17,12 @@ public class NightGameScreen extends BaseScreen{
 	
 	final String TAG = NightGameScreen.class.getSimpleName();
 	
+	/*
 	World world;
 	Body body;
+	*/
 	
+	Grid grid;
 	Player player;
 	
 	//Images
@@ -39,22 +43,26 @@ public class NightGameScreen extends BaseScreen{
 		rightArrowImg = new Sprite(new Texture("Sprites/Right Arrow.png"));
 		leftArrowImg = new Sprite(new Texture("Sprites/Left Arrow.png"));
 
-		int centerX = 150;
-		int centerY = 150;
-		float div = 1.3f;
+		int centerX = 125;
+		int centerY = 125;
+		float div = 1.25f;
 		
-		backImg.setPosition(game.GAME_WORLD_WIDTH/2 - backImg.getWidth()/2, game.GAME_WORLD_HEIGHT/2 - backImg.getHeight()/2);
+		backImg.setPosition(game.GAME_WORLD_WIDTH*8/9 - backImg.getWidth()/2, game.GAME_WORLD_HEIGHT*8/9 - backImg.getHeight()/2);
 		upArrowImg.setPosition(centerX, centerY + upArrowImg.getHeight()/div);
 		downArrowImg.setPosition(centerX, centerY - downArrowImg.getHeight()/div);
 		rightArrowImg.setPosition(centerX + rightArrowImg.getWidth()/div, centerY);
 		leftArrowImg.setPosition(centerX - leftArrowImg.getWidth()/div, centerY);
 		
+		/*
 		float gravity = 0;// -98f;//To be determined
 		world = new World(new Vector2(0,gravity), true);
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
+		*/
 		
-		player = new Player(game.GAME_WORLD_WIDTH/2, game.GAME_WORLD_HEIGHT/2);
+		grid = new Grid(game.GRID_ROWS, game.GRID_COLS);
+		
+		player = new Player(grid.getTile(0, 2), grid);
 		super.init();
 	}
 	
@@ -71,6 +79,7 @@ public class NightGameScreen extends BaseScreen{
 	public void render(float delta) {
 		super.render(delta);
 		
+		grid.drawGridLines();
 		player.update(delta);
 		
 		game.batch.begin();

@@ -5,13 +5,15 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
-
-import static com.mygdx.game.Game.Zurvival.GAME_WORLD_WIDTH;
-import static com.mygdx.game.Game.Zurvival.GAME_WORLD_HEIGHT;
+import com.mygdx.game.Grid.Grid;
+import com.mygdx.game.Grid.Tile;
 
 public class Player {
-	private int x;
-	private int y;
+	private float x;
+	private float y;
+	
+	public Tile tile;
+	public Grid grid;
 	
 	public Sprite img;
 	
@@ -22,12 +24,16 @@ public class Player {
 	private long time;
 	private long lastFiredTime;
 	
-	public Player(int x, int y){
-		this.x = x;
-		this.y = y;
-		
+	public Player(Tile t, Grid grid){
+		this.tile = t;
+		this.grid = grid;
+		this.tile.setObject(this);
+
+		this.x = this.tile.getX() - this.tile.getWidth()/4;
+		this.y = this.tile.getY() - this.tile.getHeight();
 		this.img = new Sprite(new Texture("Sprites/Temp Player.png"));
-		this.img.setPosition(GAME_WORLD_WIDTH/2 - this.img.getWidth()/2, GAME_WORLD_HEIGHT/2 - this.img.getHeight()/2);
+		this.img.setPosition(this.x, this.y);
+		//this.img.setPosition(GAME_WORLD_WIDTH/2 - this.img.getWidth()/2, GAME_WORLD_HEIGHT/2 - this.img.getHeight()/2);
 		
 		this.bList = new Array<>();
 		
@@ -80,32 +86,55 @@ public class Player {
 	}
 	
 	public void moveUp(){
-		System.out.println("Implement moveUp!");
+		if(this.tile.getRow() >= 1){
+			this.tile.setObject(null);
+			this.tile = this.grid.getTile(this.tile.getCol(), this.tile.getRow() - 1);
+			this.tile.setObject(this);
+			this.y = this.tile.getY() - this.tile.getHeight();
+			this.img.setPosition(this.x, this.y);
+		}	
 	}
 	
 	public void moveDown(){
-		System.out.println("Implement moveDown!");
+		if(this.tile.getRow() < grid.getRows() - 1){
+			this.tile.setObject(null);
+			this.tile = this.grid.getTile(this.tile.getCol(), this.tile.getRow() + 1);
+			this.tile.setObject(this);
+			this.y = this.tile.getY() - this.tile.getHeight();
+			this.img.setPosition(this.x, this.y);
+		}
 	}
 	
 	public void moveRight(){
-		System.out.println("Implement moveRight!");
+		if(this.tile.getCol() < grid.getCols() - 1){
+			this.tile.setObject(null);
+			this.tile = this.grid.getTile(this.tile.getCol() + 1, this.tile.getRow());
+			this.tile.setObject(this);
+			this.x = this.tile.getX() - this.tile.getWidth()/4;
+			this.img.setPosition(this.x, this.y);
+		}
 	}
 	
 	public void moveLeft(){
-		System.out.println("Implement moveLeft!");
+		if(this.tile.getCol() >= 1){
+			this.tile.setObject(null);
+			this.tile = this.grid.getTile(this.tile.getCol() - 1, this.tile.getRow());
+			this.tile.setObject(this);
+			this.x = this.tile.getX() - this.tile.getWidth()/4;
+			this.img.setPosition(this.x, this.y);
+		}
 	}
 	
 	public void fireBullet(float x, float y){
-		//System.out.println("[" + x + ", " + y + "]");
 		this.lastFiredTime = System.currentTimeMillis();
 		this.bList.add(new PistolBullet(this.x,this.y, x, y));
 	}
 	
-	public int getX(){
+	public float getX(){
 		return this.x;
 	}
 	
-	public int getY(){
+	public float getY(){
 		return this.y;
 	}
 	
@@ -115,6 +144,10 @@ public class Player {
 	
 	public void setFireRate(long time){
 		this.fireRate = time;
+	}
+	
+	public String toString(){
+		return "Player";
 	}
 	
 	public long getFireRate(String weaponType){

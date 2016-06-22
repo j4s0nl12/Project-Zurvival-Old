@@ -34,9 +34,16 @@ public class Zurvival extends Game {
 
 	public static final int GAME_WORLD_WIDTH = 1600;
 	public static final int GAME_WORLD_HEIGHT = 1000;
-	
+
+	//Will change this later, meh
 	public static final int GRID_ROWS = 5;
 	public static final int GRID_COLS = 10;
+	public static final int GRID_WIDTH = 1330;
+	public static final int GRID_HEIGHT = 780;
+	public static final int GRID_START_X = GAME_WORLD_WIDTH - GRID_WIDTH;//Top left origin of grid
+	public static final int GRID_START_Y = GRID_HEIGHT;
+	public static final int TILE_WIDTH = GRID_WIDTH/GRID_COLS;
+	public static final int TILE_HEIGHT = GRID_START_Y/GRID_ROWS;
 
 	private static final String PREF_NAME = "mygame_pref";
 	
@@ -51,7 +58,6 @@ public class Zurvival extends Game {
 		screenList = new Array<>();
 		
 		camera = new OrthographicCamera();
-		//viewport = new StretchViewport(GAME_WORLD_WIDTH * aspectRatio, GAME_WORLD_HEIGHT, camera);
 		viewport = new ExtendViewport(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, camera);
 		viewport.apply();
 		camera.position.set(GAME_WORLD_WIDTH/2, GAME_WORLD_HEIGHT/2, 0);
