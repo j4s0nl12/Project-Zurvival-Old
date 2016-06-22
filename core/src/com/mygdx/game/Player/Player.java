@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Grid.Grid;
 import com.mygdx.game.Grid.Tile;
@@ -24,6 +26,8 @@ public class Player {
 	private long time;
 	private long lastFiredTime;
 	
+	private Rectangle shootRect;
+	
 	public Player(Tile t, Grid grid){
 		this.tile = t;
 		this.grid = grid;
@@ -34,6 +38,9 @@ public class Player {
 		this.img = new Sprite(new Texture("Sprites/Temp Player.png"));
 		this.img.setPosition(this.x, this.y);
 		//this.img.setPosition(GAME_WORLD_WIDTH/2 - this.img.getWidth()/2, GAME_WORLD_HEIGHT/2 - this.img.getHeight()/2);
+		
+		Tile rectOrigin = this.grid.getTile(1, grid.getRows()-1);
+		this.shootRect = new Rectangle(rectOrigin.getX(), rectOrigin.getY()-rectOrigin.getHeight(), rectOrigin.getWidth() * grid.getCols()-2, rectOrigin.getHeight() * grid.getRows());
 		
 		this.bList = new Array<>();
 		
@@ -78,9 +85,11 @@ public class Player {
 		}
 		
 		if(Gdx.input.isTouched()){
-			if(time >= lastFiredTime + fireRate){
+			float tmpX = Gdx.input.getX();
+			float tmpY = Gdx.graphics.getHeight() - Gdx.input.getY();
+			if(time >= lastFiredTime + fireRate && this.shootRect.contains(tmpX, tmpY)){
 				this.fireRate = getFireRate(this.currentGun);
-				this.fireBullet(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+				this.fireBullet(tmpX, tmpY);
 			}
 		}
 	}
