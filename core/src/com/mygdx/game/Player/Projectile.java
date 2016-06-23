@@ -15,6 +15,9 @@ public class Projectile {
 	protected Vector2 gravity;
 	protected float spd;
 	
+	public int pierceCount;
+	public int damage;
+	
 	public boolean tobeDestroyed;
 	
 	public Sprite img;
@@ -23,6 +26,9 @@ public class Projectile {
 		this.pos = new Vector2(x,y);
 		this.dest = new Vector2(dirX,dirY);
 		this.vel = this.dest.sub(this.pos).nor();
+		
+		this.pierceCount = 0;
+		this.damage = 100;
 		
 		this.tobeDestroyed = false;
 	}
@@ -41,6 +47,8 @@ public class Projectile {
 			if(!this.img.getBoundingRectangle().overlaps(new Rectangle(0,0,GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT))){
 				this.tobeDestroyed = true;
 			}
+			
+			
 		}
 	}
 	

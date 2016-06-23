@@ -1,29 +1,27 @@
 package com.mygdx.game.Screens;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Game.Zurvival;
 import com.mygdx.game.Grid.Grid;
 import com.mygdx.game.Player.Player;
 import com.mygdx.game.Player.Projectile;
+import com.mygdx.game.Zombies.BaseZombie;
 
 public class NightGameScreen extends BaseScreen{
 	
 	final String TAG = NightGameScreen.class.getSimpleName();
 	
-	/*
-	World world;
-	Body body;
-	*/
-	
 	Grid grid;
 	Player player;
+	
+	Array<BaseZombie> zList;
+	long zombieSpawnTimer;
 	
 	//Images
 	Sprite backImg;
@@ -53,14 +51,15 @@ public class NightGameScreen extends BaseScreen{
 		rightArrowImg.setPosition(centerX + rightArrowImg.getWidth()/div, centerY);
 		leftArrowImg.setPosition(centerX - leftArrowImg.getWidth()/div, centerY);
 		
-		/*
-		float gravity = 0;// -98f;//To be determined
-		world = new World(new Vector2(0,gravity), true);
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyDef.BodyType.DynamicBody;
-		*/
-		
 		grid = new Grid(game.GRID_ROWS, game.GRID_COLS);
+		
+		zList = new Array<>();
+		zList.add(new BaseZombie(0));
+		zList.add(new BaseZombie(1));
+		zList.add(new BaseZombie(2));
+		zList.add(new BaseZombie(3));
+		zList.add(new BaseZombie(4));
+		
 		
 		player = new Player(grid.getTile(0, 2), grid);
 		super.init();
@@ -68,7 +67,7 @@ public class NightGameScreen extends BaseScreen{
 	
 	@Override
 	public void show() {
-		if(!this.isInit)
+		if(!this.isInit || zList.size == 0)
 			this.init();
 		super.show();
 		player.setFireRate(300L);
@@ -80,10 +79,37 @@ public class NightGameScreen extends BaseScreen{
 		super.render(delta);
 		
 		grid.drawGridLines();
+		for(BaseZombie z : zList){
+			z.update(delta);
+		}
+		
 		player.update(delta);
+		
+		Iterator<Projectile> bIter = player.bList.iterator();
+		while(bIter.hasNext()){
+			Projectile b = bIter.next();
+			Iterator<BaseZombie> zIter = zList.iterator();
+			while(zIter.hasNext()){
+				BaseZombie z = zIter.next();
+				if(b.img.getBoundingRectangle().overlaps(z.img.getBoundingRectangle())){
+					z.hp -= b.damage;
+					b.pierceCount -= 1;
+					if(b.pierceCount < 0){
+						bIter.remove();
+					}
+					if(z.hp <= 0){
+						zIter.remove();
+						break;
+					}
+				}
+			}
+		}
 		
 		game.batch.begin();
 		player.img.draw(game.batch);
+		for(BaseZombie z : zList){
+			z.img.draw(game.batch);
+		}
 		for(Projectile p : player.bList){
 			p.img.draw(game.batch);
 		}
