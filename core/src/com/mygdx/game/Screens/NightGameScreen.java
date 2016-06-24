@@ -111,6 +111,7 @@ public class NightGameScreen extends BaseScreen{
 			z.img.draw(game.batch);
 		}
 		for(Projectile p : player.bList){
+			p.p.draw(game.batch);
 			p.img.draw(game.batch);
 		}
 		backImg.draw(game.batch);

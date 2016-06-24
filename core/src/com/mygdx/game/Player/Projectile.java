@@ -1,6 +1,8 @@
 package com.mygdx.game.Player;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -22,10 +24,17 @@ public class Projectile {
 	
 	public Sprite img;
 	
+	public ParticleEffect p;
+	
 	public Projectile(float x, float y, float dirX, float dirY){//, int lane){
 		this.pos = new Vector2(x,y);
 		this.dest = new Vector2(dirX,dirY);
 		this.vel = this.dest.sub(this.pos).nor();
+		
+		this.p = new ParticleEffect();
+		this.p.load(Gdx.files.internal("Images/Particles/BulletFire.particle"), Gdx.files.internal("Images/Particles/"));
+		this.p.getEmitters().first().setPosition(this.pos.x, this.pos.y);
+		this.p.start();
 		
 		this.pierceCount = 0;
 		this.damage = 100;
@@ -38,6 +47,8 @@ public class Projectile {
 			float tmpX = this.img.getX() + (this.vel.x * this.spd * delta);
 			float tmpY = this.img.getY() + (this.vel.y * this.spd * delta);
 			this.img.setPosition(tmpX, tmpY);
+			this.p.getEmitters().first().setPosition(tmpX, tmpY);
+			this.p.update(delta);
 			
 			if(this.gravity != null){
 				Vector2 tmp = this.gravity.scl(delta);
