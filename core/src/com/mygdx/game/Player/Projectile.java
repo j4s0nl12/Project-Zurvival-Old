@@ -16,6 +16,7 @@ public class Projectile {
 	protected Vector2 dest;
 	protected Vector2 gravity;
 	protected float spd;
+	protected float angle;
 	
 	public int pierceCount;
 	public int damage;
@@ -30,6 +31,8 @@ public class Projectile {
 		this.pos = new Vector2(x,y);
 		this.dest = new Vector2(dirX,dirY);
 		this.vel = this.dest.sub(this.pos).nor();
+		this.angle =  this.pos.angle(this.dest) + 45;
+		//this.angle = (float) Math.acos(Math.toRadians((double)(this.pos.nor().dot(this.dest.nor()))));
 		
 		this.p = new ParticleEffect();
 		this.p.load(Gdx.files.internal("Images/Particles/BulletFire.particle"), Gdx.files.internal("Images/Particles/"));

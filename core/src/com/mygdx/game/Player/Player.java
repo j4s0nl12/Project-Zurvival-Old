@@ -136,7 +136,7 @@ public class Player {
 	
 	public void fireBullet(float x, float y){
 		this.lastFiredTime = System.currentTimeMillis();
-		this.bList.add(new PistolBullet(this.x,this.y, x, y));
+		this.bList.add(new PistolBullet(this.img.getX() + this.img.getWidth()/2, this.img.getY() + this.img.getHeight()/2, x, y));
 	}
 	
 	public float getX(){
