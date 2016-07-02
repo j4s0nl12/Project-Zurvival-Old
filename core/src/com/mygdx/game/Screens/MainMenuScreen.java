@@ -49,7 +49,7 @@ public class MainMenuScreen extends BaseScreen{
 		srsSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/Single Rifle Shot.mp3"));
 
 		super.init();
-		}
+	}
 
 	@Override
 	public void show() {

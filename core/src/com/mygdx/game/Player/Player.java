@@ -2,13 +2,15 @@ package com.mygdx.game.Player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Grid.Grid;
 import com.mygdx.game.Grid.Tile;
+
+import static com.mygdx.game.Game.Zurvival.volume;
 
 public class Player {
 	private float x;
@@ -27,6 +29,8 @@ public class Player {
 	private long lastFiredTime;
 	
 	private Rectangle shootRect;
+	
+	private Sound srsSound;//Single Rifle Shot
 	
 	public Player(Tile t, Grid grid){
 		this.tile = t;
@@ -48,6 +52,7 @@ public class Player {
 		this.time = System.currentTimeMillis();
 		this.lastFiredTime = time + 1000L;
 		this.fireRate = 250L;
+		this.srsSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/Single Rifle Shot.mp3"));
 	}
 	
 	public void update(float delta){
@@ -135,6 +140,10 @@ public class Player {
 	}
 	
 	public void fireBullet(float x, float y){
+		switch(this.currentGun){
+			default:
+				this.srsSound.play(volume);		
+		}
 		this.lastFiredTime = System.currentTimeMillis();
 		this.bList.add(new PistolBullet(this.img.getX() + this.img.getWidth()/2, this.img.getY() + this.img.getHeight()/2, x, y));
 	}

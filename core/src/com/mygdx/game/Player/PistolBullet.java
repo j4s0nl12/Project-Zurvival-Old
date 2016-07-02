@@ -6,7 +6,6 @@ public class PistolBullet extends Projectile{
 		super(x, y, dirX, dirY);
 		super.setImageandBounds("Sprites/BulletTmp.png");
 		this.img.setOriginCenter();
-		System.out.println(this.angle);
 		this.img.rotate(this.angle);
 		this.spd = 1500;
 	}
